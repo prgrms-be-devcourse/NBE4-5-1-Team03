@@ -42,3 +42,9 @@ out/
 
 ### Setting
 application.yml
+
+# Node.js
+node_modules/
+
+# Tailwind build output
+src/main/resources/static/css/output.css
