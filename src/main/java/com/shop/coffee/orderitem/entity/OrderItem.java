@@ -3,17 +3,14 @@ package com.shop.coffee.orderitem.entity;
 import com.shop.coffee.global.entity.BaseEntity;
 import com.shop.coffee.item.entity.Item;
 import com.shop.coffee.order.entity.Order;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.AccessLevel;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class OrderItem extends BaseEntity {
 
