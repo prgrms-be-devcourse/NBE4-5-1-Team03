@@ -15,11 +15,13 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "ORDERS")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC) //Protected -> Public 변경. Protected로 하면 테스트 코드에서 에러 발생.
 @Getter
+@Setter
 public class Order extends BaseEntity {
 
     @Column(length = 100, nullable = false)
