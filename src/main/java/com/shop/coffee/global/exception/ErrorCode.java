@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum ErrorCode {
 
-    EXAMPLE("예시 메시지입니다.");
+    EXAMPLE("예시 메시지입니다."),
+    NOSINGLEORDER("해당 주문이 존재하지 않습니다.");
+
 
     private final String message;
 

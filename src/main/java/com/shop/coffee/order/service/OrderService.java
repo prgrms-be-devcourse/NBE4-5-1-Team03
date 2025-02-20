@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.shop.coffee.global.exception.ErrorCode.NOSINGLEORDER;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -19,7 +21,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderDto getOrderById(Long id) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다. ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException(NOSINGLEORDER.getMessage()));
         return new OrderDto(order);
     }
     
