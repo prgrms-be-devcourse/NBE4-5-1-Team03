@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "ORDERS")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 public class Order extends BaseEntity {
 
@@ -40,5 +40,20 @@ public class Order extends BaseEntity {
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    public Order(String email, String address, String zipcode, List<OrderItem> orderItems) {
+        this.email = email;
+        this.address = address;
+        this.zipcode = zipcode;
+        this.orderStatus = OrderStatus.SHIPPING; // 초기 주문 상태
+        this.orderItems = orderItems;
+        this.totalPrice = calculateTotalPrice(orderItems);
+    }
+
+    private int calculateTotalPrice(List<OrderItem> orderItems) {
+        return orderItems.stream()
+                .mapToInt(item -> item.getPrice() * item.getQuantity())
+                .sum();
+    }
 
 }
