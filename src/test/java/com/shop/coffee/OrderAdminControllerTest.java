@@ -1,6 +1,6 @@
 package com.shop.coffee;
 
-import com.shop.coffee.order.controller.OrderController;
+import com.shop.coffee.order.controller.ApiV1AdminController;
 import com.shop.coffee.order.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,13 +20,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderControllerTest {
+public class OrderAdminControllerTest {
 
     @Mock
     private OrderService orderService;
 
     @InjectMocks
-    private OrderController orderController;
+    private ApiV1AdminController orderController;
 
     private MockMvc mockMvc;
 
@@ -46,6 +46,6 @@ public class OrderControllerTest {
         // /admin/orders로 GET 요청을 보내고, 상태코드는 200이어야 하며, 뷰 이름은 AdminOrders여야 함
         mockMvc.perform(get("/admin/orders"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("AdminOrders"));
+                .andExpect(view().name("admin_order_list"));
     }
 }
