@@ -40,7 +40,7 @@ public class Order extends BaseEntity {
         this.email = email;
         this.address = address;
         this.zipcode = zipcode;
-        this.orderStatus = OrderStatus.SHIPPING; // 초기 주문 상태
+        this.orderStatus = OrderStatus.RECEIVED; // 초기 주문 상태
         this.orderItems = orderItems;
         this.totalPrice = calculateTotalPrice(orderItems);
     }

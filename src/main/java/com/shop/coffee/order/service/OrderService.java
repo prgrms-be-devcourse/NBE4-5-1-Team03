@@ -1,6 +1,6 @@
 package com.shop.coffee.order.service;
 
-import com.shop.coffee.order.DTO.OrderSummaryDTO;
+import com.shop.coffee.order.dto.OrderSummaryDTO;
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.dto.OrderDto;
 import com.shop.coffee.order.entity.Order;
@@ -53,7 +53,7 @@ public class OrderService {
                 .map(OrderDto::new) // Order -> OrderDto 변환
                 .collect(Collectors.toList());
     }
-  
+
     @Transactional
     public Order create(String email, String address, String zipCode, List<OrderItem> orderItems) {
         Order order = new Order(email, address, zipCode, orderItems);
@@ -62,14 +62,11 @@ public class OrderService {
 
     @Transactional
     public OrderIntegrationViewDto processPayment(String email, String address, String zipCode, List<OrderItem> orderItems) {
-        Optional<Order> orderOptional = this.orderRepository.findByEmailAndOrderStatus(email, OrderStatus.SHIPPING);
-
+        Optional<Order> orderOptional = this.orderRepository.findByEmailAndOrderStatus(email, OrderStatus.RECEIVED);
         if (orderOptional.isPresent()) {
             Optional<Order> orderWithAddress = this.orderRepository.findByEmailAndOrderStatusAndAddressAndZipcode(
-                    email, OrderStatus.SHIPPING, address, zipCode);
-
+                    email, OrderStatus.RECEIVED, address, zipCode);
             Order newOrder = new Order(email, address, zipCode, orderItems);
-
             if(orderWithAddress.isPresent()) {
                 return new OrderIntegrationViewDto("same_location_order_integration", orderWithAddress.get(), newOrder);
             } else {
