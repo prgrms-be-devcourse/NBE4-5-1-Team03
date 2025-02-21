@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class OrderControllerTest {
+public class ApiV1OrderControllerTest5 {
 
 
     @Autowired
@@ -36,56 +36,28 @@ public class OrderControllerTest {
     private OrderService orderService;
 
     @Test
-    @DisplayName("결제 처리 시 주문이 없을 경우 order_list 뷰 반환")
+    @DisplayName("결제 처리 시 주문이 없을 경우 orders?email 반환")
     void processPaymentTest_whenOrderNotExists() throws Exception {
-        // JSON 요청 예시: 주문 항목(orderItems)는 빈 배열로 전송
-        String jsonPayload = "{" +
-                "\"email\": \"test@example.com\"," +
-                "\"address\": \"서울특별시 5A\"," +
-                "\"zipCode\": \"12345\"," +
-                "\"orderItems\": [" +
-                "{" +
-                "\"itemId\": 1," +
-                "\"price\": 1000," +
-                "\"quantity\": 2," +
-                "\"imagePath\": \"path/to/image.jpg\"" +
-                "}" +
-                "]" +
-                "}";
+        String jsonPayload = createOrderJson("test@example.com", "서울특별시 5A",
+                "12345", 1, 1000, 2, "path/to/image.jpg");
 
-        // 요청 수행 및 결과 추출
-        MvcResult mvcResult = mvc.perform(post("/orders/processPayment")
+        mvc.perform(post("/orders/processPayment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8.name())
                         .content(jsonPayload))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("order_list"))
-                .andReturn();
-
-        modelAndViewEmailTest(mvcResult, "test@example.com");
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/orders?email=test%40example.com")); // 반환된 인코딩된 문자열 확인
     }
 
     @Test
     @DisplayName("결제 처리 시 주문이 존재하고, 주소와 우편번호가 같을 경우 same_location_order_integration 뷰 반환 및 newOrder 모델 검증")
     void processPaymentTest_whenOrderExistsAndAddressEquals() throws Exception {
         // JSON 요청 예시: 주문 항목(orderItems)는 빈 배열로 전송
-
         orderService.create("test@example.com", "서울특별시 5A", "12345", List.of());
 
-        String jsonPayload = "{" +
-                "\"email\": \"test@example.com\"," +
-                "\"address\": \"서울특별시 5A\"," +
-                "\"zipCode\": \"12345\"," +
-                "\"orderItems\": [" +
-                "{" +
-                "\"itemId\": 1," +
-                "\"price\": 1000," +
-                "\"quantity\": 2," +
-                "\"imagePath\": \"path/to/image.jpg\"" +
-                "}" +
-                "]" +
-                "}";
+        String jsonPayload = createOrderJson("test@example.com", "서울특별시 5A",
+                "12345", 1, 1000, 2, "path/to/image.jpg");
 
         // 요청 수행 및 결과 추출
         MvcResult mvcResult = mvc.perform(post("/orders/processPayment")
@@ -106,19 +78,8 @@ public class OrderControllerTest {
 
         orderService.create("test@example.com", "서울특별시 1A", "12345", List.of(new OrderItem()));
 
-        String jsonPayload = "{" +
-                "\"email\": \"test@example.com\"," +
-                "\"address\": \"서울특별시 8A\"," +
-                "\"zipCode\": \"12345\"," +
-                "\"orderItems\": [" +
-                "{" +
-                "\"itemId\": 1," +
-                "\"price\": 1000," +
-                "\"quantity\": 2," +
-                "\"imagePath\": \"path/to/image.jpg\"" +
-                "}" +
-                "]" +
-                "}";
+        String jsonPayload = createOrderJson("test@example.com", "서울특별시 5A",
+                "12345", 1, 1000, 2, "path/to/image.jpg");
 
         // 요청 수행 및 결과 추출
         MvcResult mvcResult = mvc.perform(post("/orders/processPayment")
@@ -146,4 +107,21 @@ public class OrderControllerTest {
         Order newOrder = (Order) newOrderObj;
         assertThat(newOrder.getEmail()).isEqualTo(email);
     }
+
+    private String createOrderJson(String email, String address, String zipCode, int itemId, int price, int quantity, String imagePath) {
+        return "{" +
+                "\"email\": \"" + email + "\"," +
+                "\"address\": \"" + address + "\"," +
+                "\"zipCode\": \"" + zipCode + "\"," +
+                "\"orderItems\": [" +
+                "{" +
+                "\"itemId\": " + itemId + "," +
+                "\"price\": " + price + "," +
+                "\"quantity\": " + quantity + "," +
+                "\"imagePath\": \"" + imagePath + "\"" +
+                "}" +
+                "]" +
+                "}";
+    }
+
 }

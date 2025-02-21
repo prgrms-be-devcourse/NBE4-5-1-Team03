@@ -1,7 +1,7 @@
 package com.shop.coffee.order.service;
 
+import com.shop.coffee.order.dto.OrderDto;
 import com.shop.coffee.order.entity.Order;
-import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional
-public class OrderServiceTest {
+public class OrderServiceTest5 {
 
     @Autowired
     private OrderService orderService;
@@ -38,5 +38,20 @@ public class OrderServiceTest {
         assertThat(result.getAddress()).isEqualTo(address);
         assertThat(result.getZipcode()).isEqualTo(zipCode);
         assertThat(result.getOrderItems().size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("주문 조회 후 존재 확인 및 삭제 후 getOrderById 호출 시 예외 발생 테스트")
+    public void testDeleteOrder() {
+        long orderId = 1L;
+
+        OrderDto orderDto = orderService.getOrderById(orderId);
+        assertThat(orderDto).isNotNull();
+
+        orderService.deleteOrder(orderId);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            orderService.getOrderById(orderId);
+        });
     }
 }
