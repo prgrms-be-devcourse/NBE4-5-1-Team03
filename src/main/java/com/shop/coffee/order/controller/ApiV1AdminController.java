@@ -1,7 +1,7 @@
 package com.shop.coffee.order.controller;
 
 import com.shop.coffee.order.OrderStatus;
-import com.shop.coffee.order.dto.OrderDetailDto;
+import com.shop.coffee.order.dto.AdminOrderDetailDto;
 import com.shop.coffee.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -28,7 +28,7 @@ public class ApiV1AdminController {
 
     @GetMapping("/order-detail")
     public String showAdminOrderDetail(@RequestParam("email") String email, Model model) {
-        OrderDetailDto order = orderService.getOrderByEmail(email);
+        AdminOrderDetailDto order = orderService.getOrderByEmail(email);
         model.addAttribute("order", order);
         return "admin_order_detail";
 
