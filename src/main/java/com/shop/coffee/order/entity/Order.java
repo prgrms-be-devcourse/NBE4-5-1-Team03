@@ -3,25 +3,18 @@ package com.shop.coffee.order.entity;
 import com.shop.coffee.global.entity.BaseEntity;
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.orderitem.entity.OrderItem;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "ORDERS")
 @NoArgsConstructor(access = AccessLevel.PUBLIC) //Protected -> Public 변경. Protected로 하면 테스트 코드에서 에러 발생.
 @Getter
 @Setter
+@AllArgsConstructor
 public class Order extends BaseEntity {
 
     @Column(length = 100, nullable = false)
@@ -42,5 +35,20 @@ public class Order extends BaseEntity {
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    public Order(String email, String address, String zipcode, List<OrderItem> orderItems) {
+        this.email = email;
+        this.address = address;
+        this.zipcode = zipcode;
+        this.orderStatus = OrderStatus.RECEIVED; // 초기 주문 상태
+        this.orderItems = orderItems;
+        this.totalPrice = calculateTotalPrice(orderItems);
+    }
+
+    private int calculateTotalPrice(List<OrderItem> orderItems) {
+        return orderItems.stream()
+                .mapToInt(item -> item.getPrice() * item.getQuantity())
+                .sum();
+    }
 
 }
