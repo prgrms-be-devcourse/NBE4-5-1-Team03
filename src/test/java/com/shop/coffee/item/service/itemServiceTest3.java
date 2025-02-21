@@ -18,7 +18,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-class ItemServiceTest {
+class itemServiceTest3 {
 
     @Mock
     private ItemRepository itemRepository;
