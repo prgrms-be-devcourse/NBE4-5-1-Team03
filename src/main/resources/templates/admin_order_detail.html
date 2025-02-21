@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Detail</title>
+</head>
+<body>
+<h1>Order Detail</h1>
+<div>
+    <p><strong>Address:</strong> <span th:text="${order.address}"></span></p>
+    <p><strong>Zipcode:</strong> <span th:text="${order.zipcode}"></span></p>
+    <p><strong>Modified At:</strong> <span th:text="${order.modifiedAt}"></span></p>
+</div>
+<table>
+    <thead>
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Total Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>A</td>
+        <td th:text="${order.productInfo[0][1]}"></td>
+        <td th:text="${order.productInfo[0][0]}"></td>
+    </tr>
+    <tr>
+        <td>B</td>
+        <td th:text="${order.productInfo[1][1]}"></td>
+        <td th:text="${order.productInfo[1][0]}"></td>
+    </tr>
+    <tr>
+        <td>C</td>
+        <td th:text="${order.productInfo[2][1]}"></td>
+        <td th:text="${order.productInfo[2][0]}"></td>
+    </tr>
+    <tr>
+        <td>D</td>
+        <td th:text="${order.productInfo[3][1]}"></td>
+        <td th:text="${order.productInfo[3][0]}"></td>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <p><strong>Total Price:</strong> <span th:text="${order.totalPrice}"></span></p>
+</div>
+</body>
+</html>
