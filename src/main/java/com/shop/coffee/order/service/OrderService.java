@@ -81,10 +81,12 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public void deleteOrder(Long orderId) {
         this.orderRepository.deleteById(orderId);
     }
 
+    @Transactional
     public OrderDetailDto updateOrder(Long orderId, OrderDetailDto orderDetailDto) {
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(NOSINGLEORDER.getMessage()));
@@ -106,7 +108,7 @@ public class OrderService {
                 existingItem.setQuantity(newItem.getQuantity());
                 updatedItems.add(existingItem);
             } else {
-                OrderItem orderItem = new OrderItem(newItem.getOrder(), newItem.getItem(), newItem.getPrice(), newItem.getQuantity(), newItem.getImagePath());
+                OrderItem orderItem = new OrderItem(existingOrder, newItem.getItem(), newItem.getPrice(), newItem.getQuantity(), newItem.getImagePath());
                 updatedItems.add(orderItem);
             }
         }
