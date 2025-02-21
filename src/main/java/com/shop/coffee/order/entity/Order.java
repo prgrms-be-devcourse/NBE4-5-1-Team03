@@ -51,4 +51,8 @@ public class Order extends BaseEntity {
                 .sum();
     }
 
+    public void updateOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
 }
