@@ -1,4 +1,4 @@
-package com.shop.coffee.service;
+package com.shop.coffee.order.service;
 
 import com.shop.coffee.order.dto.OrderDto;
 import com.shop.coffee.order.entity.Order;
@@ -12,19 +12,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static com.shop.coffee.order.OrderStatus.RECEIVED;
 import static org.assertj.core.api.Assertions.assertThat;
-
+//우동균
 @SpringBootTest(classes = com.shop.coffee.CoffeeApplication.class)
 @ActiveProfiles("test")
-public class OrderServiceTest {
+public class OrderServiceTest4 {
     @Autowired
     private OrderService orderService;
     @Autowired
     private OrderRepository orderRepository;
 
+    //INSERT INTO orders (email, address, zipcode, order_status, total_price)
+    //VALUES ('test@email.com', '테스트주소', '1010101', 'RECEIVED', 999999);
     @BeforeEach
     void setUp() {
         Order order = new Order();

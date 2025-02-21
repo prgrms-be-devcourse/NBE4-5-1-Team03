@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Order List Page</title>
 </head>
 <body>
+<h1>Order Details</h1>
+
+<ul>
+    <th:block th:each="order : ${orders}"> <!-- 이메일에 해당하는 주문이 여러 개일 경우 리스트 형식으로 보여줌 -->
+        <li>
+            <h3>주문 정보</h3>
+            <p><strong>주문 ID:</strong> <span th:text="${order.id}"></span></p>
+            <p><strong>이메일:</strong> <span th:text="${order.email}"></span></p>
+            <p><strong>주소:</strong> <span th:text="${order.address}"></span></p>
+            <p><strong>우편번호:</strong> <span th:text="${order.zipcode}"></span></p>
+            <p><strong>주문 상태:</strong> <span th:text="${order.orderStatus}"></span></p>
+            <p><strong>총 가격:</strong> <span th:text="${order.totalPrice}"></span> 원</p>
+            <hr/>
+        </li>
+    </th:block>
+</ul>
 
 </body>
 </html>
