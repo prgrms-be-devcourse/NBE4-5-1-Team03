@@ -63,10 +63,12 @@ public class OrderService {
     @Transactional
     public OrderIntegrationViewDto processPayment(String email, String address, String zipCode, List<OrderItem> orderItems) {
         Optional<Order> orderOptional = this.orderRepository.findByEmailAndOrderStatus(email, OrderStatus.RECEIVED);
+
         if (orderOptional.isPresent()) {
             Optional<Order> orderWithAddress = this.orderRepository.findByEmailAndOrderStatusAndAddressAndZipcode(
                     email, OrderStatus.RECEIVED, address, zipCode);
             Order newOrder = new Order(email, address, zipCode, orderItems);
+
             if(orderWithAddress.isPresent()) {
                 return new OrderIntegrationViewDto("same_location_order_integration", orderWithAddress.get(), newOrder);
             } else {
@@ -74,7 +76,11 @@ public class OrderService {
             }
         } else {
             Order newOrder = create(email, address, zipCode, orderItems);
-            return new OrderIntegrationViewDto("order_list", null, newOrder);
+            return new OrderIntegrationViewDto("redirect:/orders", null, newOrder);
         }
+    }
+
+    public void deleteOrder(Long id) {
+        this.orderRepository.deleteById(id);
     }
 }
