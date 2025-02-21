@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #ddd;
+        }
+
+        .card {
+            margin: auto;
+            max-width: 950px;
+            width: 90%;
+            box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            border-radius: 1rem;
+            border: transparent;
+        }
+
+        .products {
+            width: 100%;
+        }
+
+        .products .price, .products .action {
+            line-height: 38px;
+        }
+
+        img {
+            width: 3.5rem;
+        }
+    </style>
+    <title>상품 목록</title>
+</head>
+<body class="container-fluid">
+<div class="row justify-content-center m-4">
+    <h1 class="text-center">상품 목록</h1>
+</div>
+<div class="card">
+    <div class="row">
+        <div class="col-md-8 mt-4 d-flex flex-column align-items-start p-3 pt-0">
+            <h5 class="flex-grow-0"><b>상품 목록</b></h5>
+            <ul class="list-group products">
+                <li class="list-group-item d-flex mt-3" th:each="item : ${items}">
+                    <div class="col-2">
+                        <img class="img-fluid" th:src="@{${item.imagePath}}" alt="상품 이미지">
+                    </div>
+                    <div class="col">
+                        <div class="row text-muted" th:text="${item.category}">카테고리</div>
+                        <div class="row" th:text="${item.name}">상품명</div>
+                    </div>
+                    <div class="col text-center price" th:text="${item.price} + '원'">가격</div>
+                    <div class="col text-end action">
+                        <a class="btn btn-small btn-outline-dark" th:href="@{'/orders/add?itemId=' + ${item.id}}">추가</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
