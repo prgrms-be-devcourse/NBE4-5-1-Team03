@@ -29,8 +29,8 @@ public class OrderServiceTest {
     void setUp() {
         Order order = new Order();
         order.setEmail("test@email.com");
-        order.setAddress("123 Test St");
-        order.setZipcode("10001");
+        order.setAddress("테스트주소");
+        order.setZipcode("1010101");
         order.setOrderStatus(RECEIVED);
         order.setTotalPrice(999999);
         orderRepository.save(order);
@@ -53,7 +53,7 @@ public class OrderServiceTest {
         assertThat(result.getEmail()).isEqualTo("test@email.com");
         assertThat(result.getAddress()).isEqualTo("테스트주소");
         assertThat(result.getZipcode()).isEqualTo("1010101");
-        assertThat(result.getOrderStatus()).isEqualTo(RECEIVED);
+        assertThat(result.getOrderStatus()).isEqualTo("RECEIVED");
         assertThat(result.getTotalPrice()).isEqualTo(999999);
 
     }

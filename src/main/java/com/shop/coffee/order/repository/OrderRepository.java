@@ -1,10 +1,10 @@
 package com.shop.coffee.order.repository;
-
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
@@ -15,4 +15,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAll();
     // 주문 생성 시간 내림차순 정렬
     List<Order> findAllByOrderByCreatedAtDesc();
+    Optional<Order> findByEmailAndOrderStatus(String email, OrderStatus orderStatus);
+    Optional<Order> findByEmailAndOrderStatusAndAddressAndZipcode(String email, OrderStatus orderStatus, String address, String zipCode);
 }

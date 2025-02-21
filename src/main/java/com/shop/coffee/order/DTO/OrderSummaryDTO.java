@@ -1,4 +1,4 @@
-package com.shop.coffee.order.DTO;
+package com.shop.coffee.order.dto;
 
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.entity.Order;

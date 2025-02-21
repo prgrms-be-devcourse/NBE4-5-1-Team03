@@ -1,8 +1,8 @@
 package com.shop.coffee;
 
 import com.shop.coffee.item.entity.Item;
-import com.shop.coffee.order.DTO.OrderSummaryDTO;
 import com.shop.coffee.order.OrderStatus;
+import com.shop.coffee.order.dto.OrderSummaryDTO;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.order.service.OrderService;
