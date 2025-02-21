@@ -47,7 +47,7 @@ public class ApiV1OrderControllerTest5 {
                         .content(jsonPayload))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/orders?email=test%40example.com")); // 반환된 인코딩된 문자열 확인
+                .andExpect(redirectedUrl("/orders/order-list?email=test%40example.com")); // 반환된 인코딩된 문자열 확인
     }
 
     @Test

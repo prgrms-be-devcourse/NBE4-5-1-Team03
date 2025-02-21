@@ -1,18 +1,20 @@
 package com.shop.coffee.order.service;
 
+import com.shop.coffee.item.entity.Item;
 import com.shop.coffee.order.OrderStatus;
+import com.shop.coffee.order.dto.OrderDetailDto;
 import com.shop.coffee.order.dto.OrderDto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import com.shop.coffee.order.dto.OrderIntegrationViewDto;
+import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.shop.coffee.global.exception.ErrorCode.NOSINGLEORDER;
@@ -75,12 +77,45 @@ public class OrderService {
             }
         } else {
             Order newOrder = create(email, address, zipCode, orderItems);
-            return new OrderIntegrationViewDto("redirect:/orders", null, newOrder);
+            return new OrderIntegrationViewDto("redirect:/orders/order-list", null, newOrder);
         }
     }
 
-    public void deleteOrder(Long id) {
-        this.orderRepository.deleteById(id);
+    @Transactional
+    public void deleteOrder(Long orderId) {
+        this.orderRepository.deleteById(orderId);
+    }
+
+    @Transactional
+    public OrderDetailDto updateOrder(Long orderId, OrderDetailDto orderDetailDto) {
+        Order existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException(NOSINGLEORDER.getMessage()));
+
+        existingOrder.setAddress(orderDetailDto.getAddress());
+        existingOrder.setZipcode(orderDetailDto.getZipcode());
+
+        List<OrderItem> existingItems = existingOrder.getOrderItems();
+        List<OrderItem> newItems = orderDetailDto.getOrderItems();
+
+        Map<Long, OrderItem> existingItemMap = existingItems.stream()
+                .collect(Collectors.toMap(OrderItem::getId, item -> item));
+
+        List<OrderItem> updatedItems = new ArrayList<>();
+
+        for (OrderItem newItem : newItems) {
+            if (newItem.getId() != null && existingItemMap.containsKey(newItem.getId())) {
+                OrderItem existingItem = existingItemMap.get(newItem.getId());
+                existingItem.setQuantity(newItem.getQuantity());
+                updatedItems.add(existingItem);
+            } else {
+                OrderItem orderItem = new OrderItem(existingOrder, newItem.getItem(), newItem.getPrice(), newItem.getQuantity(), newItem.getImagePath());
+                updatedItems.add(orderItem);
+            }
+        }
+
+        existingOrder.setOrderItems(updatedItems);
+
+        return new OrderDetailDto(existingOrder);
     }
 
     //이메일로 주문 유무 확인

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
@@ -26,6 +27,7 @@ public class OrderItem extends BaseEntity {
     private int price;
 
     @Column(nullable = false)
+    @Setter
     private int quantity;
 
     @Column(length = 255, nullable = true)
