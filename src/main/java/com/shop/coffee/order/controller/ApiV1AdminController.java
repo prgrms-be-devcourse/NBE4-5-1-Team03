@@ -20,7 +20,7 @@ public class ApiV1AdminController {
 
     @GetMapping("/orders")
     public String getOrders(@RequestParam(required = false) OrderStatus orderStatus, Model model) {
-        List<com.shop.coffee.order.dto.OrderSummaryDTO> orders = orderService.getOrders(orderStatus);
+        List<com.shop.coffee.order.dto.OrderSummaryDto> orders = orderService.getOrders(orderStatus);
         model.addAttribute("orders", orders);
         return "admin_order_list";
     }

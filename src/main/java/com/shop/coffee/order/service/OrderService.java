@@ -1,6 +1,5 @@
 package com.shop.coffee.order.service;
 
-import com.shop.coffee.order.dto.OrderSummaryDTO;
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.dto.OrderDto;
 import com.shop.coffee.order.entity.Order;
@@ -33,7 +32,7 @@ public class OrderService {
 
     // 전체 주문 조회 또는 주문 상태에 따른 조회 후 DTO로 변환하여 반환
     @Transactional
-    public List<OrderSummaryDTO> getOrders(OrderStatus orderStatus) {
+    public List<com.shop.coffee.order.dto.OrderSummaryDto> getOrders(OrderStatus orderStatus) {
         List<Order> orders;
         if (orderStatus == null) {
             orders = orderRepository.findAll(); // 전체 주문 조회
@@ -43,7 +42,7 @@ public class OrderService {
         if (orders.isEmpty()) {
             return Collections.emptyList(); // 주문이 없을 경우 빈 리스트 반환
         }
-        return orders.stream().map(OrderSummaryDTO::new).collect(Collectors.toList());
+        return orders.stream().map(com.shop.coffee.order.dto.OrderSummaryDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
