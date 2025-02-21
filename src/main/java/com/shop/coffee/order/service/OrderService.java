@@ -3,6 +3,7 @@ package com.shop.coffee.order.service;
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.dto.AdminOrderDetailDto;
 import com.shop.coffee.order.dto.OrderDetailDto;
+import com.shop.coffee.order.dto.OrderDetailDto;
 import com.shop.coffee.order.dto.OrderDto;
 import com.shop.coffee.order.dto.OrderIntegrationViewDto;
 import com.shop.coffee.order.entity.Order;
@@ -83,7 +84,7 @@ public class OrderService {
             }
         } else {
             Order newOrder = create(email, address, zipCode, orderItems);
-            return new OrderIntegrationViewDto("redirect:/orders/order-list", null, newOrder);
+            return new OrderIntegrationViewDto("redirect:/orders", null, newOrder);
         }
     }
 
