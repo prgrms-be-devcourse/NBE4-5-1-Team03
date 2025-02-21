@@ -48,3 +48,6 @@ node_modules/
 
 # Tailwind build output
 src/main/resources/static/css/output.css
+
+# Init Data
+src/main/java/com/shop/coffee/global/config/DataInitializer.java
