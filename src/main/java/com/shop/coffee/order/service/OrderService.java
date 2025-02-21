@@ -115,4 +115,10 @@ public class OrderService {
 
         return new OrderDetailDto(existingOrder);
     }
+
+    //이메일로 주문 유무 확인
+    public boolean emailExists(String email) {
+        return orderRepository.existsByEmail(email);
+    }
+
 }

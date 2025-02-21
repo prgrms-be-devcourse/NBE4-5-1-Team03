@@ -1,13 +1,10 @@
 package com.shop.coffee.order.controller;
 
 import com.shop.coffee.order.dto.OrderDetailDto;
-import com.shop.coffee.order.dto.OrderDetailDto;
 import com.shop.coffee.order.dto.OrderDto;
 import com.shop.coffee.order.dto.OrderIntegrationViewDto;
 import com.shop.coffee.order.dto.OrderPaymentRequestDto;
-import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.service.OrderService;
-import com.shop.coffee.orderitem.entity.OrderItem;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -79,5 +76,35 @@ public class ApiV1OrderController {
         orderService.updateOrder(orderId, orderDetailDto);
         redirectAttributes.addAttribute("email", orderDetailDto.getEmail());
         return "redirect:/orders";
+    }
+
+    //입력한 이메일에 따라 마이페이지 또는 메인페이지으로 이동
+    @PostMapping("/check-email")
+    public String checkEmail(@RequestParam("email") String email) {
+        boolean emailExists = orderService.emailExists(email);
+        if (emailExists) {
+            return ("redirect:/orders/order-list?email=" + email);
+        } else {
+            return ("redirect:/orders/item-list");
+        }
+    }
+
+    // 이메일 입력 폼
+    @GetMapping("/email-input")
+    public String showEmailInputForm() {
+        return "email_input";
+    }
+
+    // 이메일에 대한 주문 목록 조회 뷰
+    @GetMapping("/order-list")
+    public String showOrderList(@RequestParam("email") String email, Model model) {
+        model.addAttribute("email", email);
+        return "order_list";
+    }
+
+    // 상품 목록 조회 뷰
+    @GetMapping("/item-list")
+    public String showItemList() {
+        return "item_list";
     }
 }
