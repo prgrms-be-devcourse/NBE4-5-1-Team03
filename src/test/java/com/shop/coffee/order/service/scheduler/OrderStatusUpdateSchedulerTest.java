@@ -52,4 +52,18 @@ class OrderStatusUpdateSchedulerTest {
         verify(receivedOrder, times(1)).updateOrderStatus(OrderStatus.SHIPPING);
     }
 
+    @Test
+    @DisplayName("RECEIVED 상태인 주문이 없는 경우, 아무런 업데이트도 발생하지 않아야 한다.")
+    void 주문_상태_업데이트_성공_테스트_2() {
+        // given
+        when(orderRepository.findByOrderStatus(OrderStatus.RECEIVED))
+                .thenReturn(List.of());
+
+        // when
+        orderStatusUpdateScheduler.updateOrderStatus();
+
+        // then
+        verify(receivedOrder, never()).updateOrderStatus(any());
+    }
+
 }
