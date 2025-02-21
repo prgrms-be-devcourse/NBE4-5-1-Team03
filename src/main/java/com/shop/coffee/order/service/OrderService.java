@@ -1,11 +1,12 @@
 package com.shop.coffee.order.service;
 
 import com.shop.coffee.order.OrderStatus;
+import com.shop.coffee.order.dto.OrderDetailDto;
 import com.shop.coffee.order.dto.OrderDto;
+import com.shop.coffee.order.dto.OrderIntegrationViewDto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.orderitem.entity.OrderItem;
-import com.shop.coffee.order.dto.OrderIntegrationViewDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,13 @@ public class OrderService {
             return Collections.emptyList(); // 주문이 없을 경우 빈 리스트 반환
         }
         return orders.stream().map(com.shop.coffee.order.dto.OrderSummaryDto::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public OrderDetailDto getOrderByEmail(String email) {
+        Order order = (Order) orderRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException(NOSINGLEORDER.getMessage()));
+        return new OrderDetailDto(order);
     }
 
     @Transactional(readOnly = true)

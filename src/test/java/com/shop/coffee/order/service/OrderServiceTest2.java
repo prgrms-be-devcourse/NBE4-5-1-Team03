@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.lenient;
@@ -118,5 +119,19 @@ class OrderServiceTest2 {
         // then
         assertTrue(exists);
         assertFalse(notExists);
+    }
+
+    @Test
+    @DisplayName("이메일로 주문 조회 - 존재 여부 확인")
+    void test5() {
+        // given
+        String email = "user1@example.com";
+        when(orderRepository.findByEmail(email)).thenReturn(Optional.of(order1));
+
+        // when
+        Optional<Object> orderOptional = orderRepository.findByEmail(email);
+
+        // then
+        assertTrue(orderOptional.isPresent());
     }
 }
