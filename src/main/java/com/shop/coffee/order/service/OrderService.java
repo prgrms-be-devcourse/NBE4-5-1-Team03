@@ -82,4 +82,10 @@ public class OrderService {
     public void deleteOrder(Long id) {
         this.orderRepository.deleteById(id);
     }
+
+    //이메일로 주문 유무 확인
+    public boolean emailExists(String email) {
+        return orderRepository.existsByEmail(email);
+    }
+
 }

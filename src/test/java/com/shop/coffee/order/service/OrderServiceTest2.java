@@ -17,8 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
@@ -99,5 +98,25 @@ class OrderServiceTest2 {
         // 주문이 없으므로 빈 리스트 반환
         assertNotNull(orders);
         assertEquals(0, orders.size());
+    }
+
+    @Test
+    @DisplayName("이메일 존재 여부 확인")
+    void test4() {
+        // given
+        String existingEmail = "test1@example.com";
+        String nonExistingEmail = "nonexistent@example.com";
+
+        // Mock 설정
+        when(orderRepository.existsByEmail(existingEmail)).thenReturn(true);
+        when(orderRepository.existsByEmail(nonExistingEmail)).thenReturn(false);
+
+        // when
+        boolean exists = orderService.emailExists(existingEmail);
+        boolean notExists = orderService.emailExists(nonExistingEmail);
+
+        // then
+        assertTrue(exists);
+        assertFalse(notExists);
     }
 }
