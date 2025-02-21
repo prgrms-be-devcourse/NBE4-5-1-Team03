@@ -13,7 +13,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // 주문 상태에 따라 주문 조회
     List<Order> findByOrderStatus(OrderStatus orderStatus);
-
     //전체 주문 조회
     List<Order> findAll();
 

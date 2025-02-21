@@ -25,20 +25,26 @@ public class ApiV1OrderController {
 
     private final OrderService orderService;
 
+    //주문번호(id)로 주문 조회
     // 주문 번호로 주문 단건 조회
     @GetMapping("/{id}")
     public String getOrderById(@PathVariable Long id, Model model) {
         OrderDto orderDto = orderService.getOrderById(id);
-        if(orderDto == null) {
-            throw new IllegalArgumentException(NO_ORDER_NUMBER.getMessage()+": " + id);
-        }
-        model.addAttribute("order", orderDto);
+        model.addAttribute("orders", orderDto);
         return "order_list";
     }
 
+    // 이메일로 주문 조회
     @GetMapping
-    public List<OrderDto> getAllOrders() {
-        return orderService.getAllOrders();
+    public String getOrdersByEmail(@RequestParam(required = false) String email, Model model) {
+        if (email != null) {
+            List<OrderDto> orders = orderService.getOrdersByEmail(email);
+            model.addAttribute("orders", orders);
+            return "order_list";
+        } else {
+            model.addAttribute("orders", List.of()); //데이터가 없을 때 빈 리스트를 전달
+            return "same_location_order_integration";
+        }
     }
 
     @PostMapping("/processPayment")
