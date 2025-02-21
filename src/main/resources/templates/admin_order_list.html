@@ -13,6 +13,7 @@
         <th>Modified At</th>
         <th>Total Price</th>
         <th>Item Name</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -22,6 +23,9 @@
         <td th:text="${order.modifiedAt}"></td>
         <td th:text="${order.totalPrice}"></td>
         <td th:text="${order.summaryItemName}"></td>
+        <td>
+            <a th:href="@{/admin/order-detail(email=${order.email})}">주문상세</a> <!-- Order detail button added -->
+        </td>
     </tbody>
 </table>
 </body>
