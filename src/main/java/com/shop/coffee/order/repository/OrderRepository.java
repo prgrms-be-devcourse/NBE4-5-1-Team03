@@ -22,4 +22,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByOrderByCreatedAtDesc();
     Optional<Order> findByEmailAndOrderStatus(String email, OrderStatus orderStatus);
     Optional<Order> findByEmailAndOrderStatusAndAddressAndZipcode(String email, OrderStatus orderStatus, String address, String zipCode);
+
+    Optional<Object> findByEmail(String email);
 }

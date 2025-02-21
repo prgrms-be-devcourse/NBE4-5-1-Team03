@@ -4,7 +4,6 @@ import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
