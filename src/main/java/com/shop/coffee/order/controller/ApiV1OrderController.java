@@ -1,10 +1,13 @@
 package com.shop.coffee.order.controller;
 
+import com.shop.coffee.order.dto.OrderDetailDto;
+import com.shop.coffee.order.dto.OrderDetailDto;
 import com.shop.coffee.order.dto.OrderDto;
 import com.shop.coffee.order.dto.OrderIntegrationViewDto;
 import com.shop.coffee.order.dto.OrderPaymentRequestDto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.service.OrderService;
+import com.shop.coffee.orderitem.entity.OrderItem;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -38,7 +41,7 @@ public class ApiV1OrderController {
                 request.getEmail(), request.getAddress(), request.getZipCode(), request.getOrderItems()
         );
 
-        if (result.getViewName().equals("redirect:/orders")) {
+        if (result.getViewName().equals("redirect:/orders/order-list")) {
             redirectAttributes.addAttribute("email", result.getNewOrder().getEmail());
         }
 
@@ -64,10 +67,17 @@ public class ApiV1OrderController {
         return "";
     }
 
-    @DeleteMapping
-    public String deleteOrder(@RequestParam Long id, @RequestParam String email, RedirectAttributes redirectAttributes) {
-        orderService.deleteOrder(id);
+    @DeleteMapping("/{orderId}")
+    public String deleteOrder(@PathVariable Long orderId, @RequestParam String email, RedirectAttributes redirectAttributes) {
+        orderService.deleteOrder(orderId);
         redirectAttributes.addAttribute("email", email);
+        return "redirect:/orders";
+    }
+
+    @PutMapping("/{orderId}")
+    public String updateOrder(@PathVariable Long orderId, @ModelAttribute OrderDetailDto orderDetailDto, RedirectAttributes redirectAttributes) {
+        orderService.updateOrder(orderId, orderDetailDto);
+        redirectAttributes.addAttribute("email", orderDetailDto.getEmail());
         return "redirect:/orders";
     }
 }
