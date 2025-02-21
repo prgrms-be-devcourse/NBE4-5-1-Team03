@@ -96,7 +96,7 @@ public class ApiV1OrderController {
 
     // 상품 목록 조회 뷰
     @GetMapping("/item-list")
-    public String showOrderList() {
+    public String showItemList() {
         return "item_list";
     }
 }
