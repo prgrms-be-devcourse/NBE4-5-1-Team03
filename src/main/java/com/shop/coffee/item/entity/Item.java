@@ -3,15 +3,14 @@ package com.shop.coffee.item.entity;
 import com.shop.coffee.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PUBLIC) // 테스트 코드에서 에러 발생으로 Protected -> Public변경
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
-@Setter
 public class Item extends BaseEntity {
 
     @Column(length = 100, nullable = false)
@@ -28,7 +27,5 @@ public class Item extends BaseEntity {
 
     @Column(length = 255, nullable = true)
     private String imagePath;
-
-
 
 }
