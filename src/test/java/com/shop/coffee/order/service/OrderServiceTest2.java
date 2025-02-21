@@ -1,11 +1,9 @@
-package com.shop.coffee;
+package com.shop.coffee.order.service;
 
 import com.shop.coffee.item.entity.Item;
 import com.shop.coffee.order.OrderStatus;
-import com.shop.coffee.order.dto.OrderSummaryDTO;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
-import com.shop.coffee.order.service.OrderService;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +23,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OrderServiceTest {
+class OrderServiceTest2 {
 
     @Mock
     private OrderRepository orderRepository;
@@ -62,7 +60,7 @@ class OrderServiceTest {
 
         //  when
         //  getOrders의 인자로 null이 왔으므로 모든 주문 조회
-        List<OrderSummaryDTO> orders = orderService.getOrders(null);
+        List<com.shop.coffee.order.dto.OrderSummaryDto> orders = orderService.getOrders(null);
 
         // then
         // 2개의 주문이 조회되어야 함
@@ -76,7 +74,7 @@ class OrderServiceTest {
 
         // when
         // getOrders의 인자로 OrderStatus.RECEIVED가 왔으므로 상태가 RECEIVED인 주문 조회
-        List<OrderSummaryDTO> orders = orderService.getOrders(OrderStatus.RECEIVED);
+        List<com.shop.coffee.order.dto.OrderSummaryDto> orders = orderService.getOrders(OrderStatus.RECEIVED);
 
         // then
         // 1개의 주문이 조회되어야 함
@@ -95,7 +93,7 @@ class OrderServiceTest {
 
         // when
         // getOrders의 인자로 null이 왔으므로 모든 주문 조회
-        List<OrderSummaryDTO> orders = orderService.getOrders(null);
+        List<com.shop.coffee.order.dto.OrderSummaryDto> orders = orderService.getOrders(null);
 
         // then
         // 주문이 없으므로 빈 리스트 반환

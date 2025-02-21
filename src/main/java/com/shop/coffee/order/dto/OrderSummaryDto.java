@@ -5,14 +5,14 @@ import com.shop.coffee.order.entity.Order;
 import lombok.Getter;
 
 @Getter
-public class OrderSummaryDTO {
+public class OrderSummaryDto {
     private final OrderStatus orderStatus;
     private final String email;
     private final String modifiedAt;
     private final int totalPrice;
     private final String SummaryItemName;
 
-    public OrderSummaryDTO(Order order) {
+    public OrderSummaryDto(Order order) {
         this.orderStatus = order.getOrderStatus();
         this.email = order.getEmail();
         this.modifiedAt = String.valueOf(order.getModifiedAt());
