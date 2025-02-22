@@ -35,7 +35,7 @@ public class ApiV1OrderController {
     public String processPayment(Model model, @RequestBody @Valid OrderPaymentRequestDto request
             , RedirectAttributes redirectAttributes) {
         OrderIntegrationViewDto result = orderService.processPayment(
-                request.getEmail(), request.getAddress(), request.getZipCode(), request.getOrderItems()
+                request.getEmail(), request.getAddress(), request.getZipCode(), request.getItems()
         );
 
         if (result.getViewName().equals("redirect:/orders/order-list")) {

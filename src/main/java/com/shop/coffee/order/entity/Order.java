@@ -55,4 +55,9 @@ public class Order extends BaseEntity {
         this.orderStatus = orderStatus;
     }
 
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this); // 연관관계 설정
+    }
+
 }
