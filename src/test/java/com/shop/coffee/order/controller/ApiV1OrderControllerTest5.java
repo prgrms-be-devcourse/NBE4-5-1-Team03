@@ -1,8 +1,10 @@
 package com.shop.coffee.order.controller;
 
-import com.shop.coffee.order.entity.Order;
+import com.shop.coffee.item.repository.ItemRepository;
+import com.shop.coffee.order.dto.OrderIntegrationDto;
 import com.shop.coffee.order.service.OrderService;
 import com.shop.coffee.orderitem.entity.OrderItem;
+import com.shop.coffee.orderitem.repository.OrderItemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,11 +36,17 @@ public class ApiV1OrderControllerTest5 {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
     @Test
     @DisplayName("결제 처리 시 주문이 없을 경우 orders?email 반환")
     void processPaymentTest_whenOrderNotExists() throws Exception {
         String jsonPayload = createOrderJson("test@example.com", "서울특별시 5A",
-                "12345", 1, 1000, 2, "path/to/image.jpg");
+                "12345", 1, "coffee 1", 1000, 2, "path/to/image.jpg");
 
         mvc.perform(post("/orders/processPayment")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -53,11 +60,12 @@ public class ApiV1OrderControllerTest5 {
     @Test
     @DisplayName("결제 처리 시 주문이 존재하고, 주소와 우편번호가 같을 경우 same_location_order_integration 뷰 반환 및 newOrder 모델 검증")
     void processPaymentTest_whenOrderExistsAndAddressEquals() throws Exception {
-        // JSON 요청 예시: 주문 항목(orderItems)는 빈 배열로 전송
-        orderService.create("test@example.com", "서울특별시 5A", "12345", List.of());
+        OrderItem orderItem1 = orderItemRepository.findById(1L).get();
+        OrderItem orderItem2 = orderItemRepository.findById(2L).get();
+        orderService.create("test@example.com", "서울특별시 5A", "12345", List.of(orderItem1, orderItem2));
 
         String jsonPayload = createOrderJson("test@example.com", "서울특별시 5A",
-                "12345", 1, 1000, 2, "path/to/image.jpg");
+                "12345", 1, "coffee 1",1000, 2, "path/to/image.jpg");
 
         // 요청 수행 및 결과 추출
         MvcResult mvcResult = mvc.perform(post("/orders/processPayment")
@@ -76,10 +84,12 @@ public class ApiV1OrderControllerTest5 {
     @DisplayName("결제 처리 시 주문이 존재하고, 주소와 우편번호가 다를 경우 order_integration 뷰 반환 및 newOrder 모델 검증")
     void processPaymentTest_whenOrderExistsAndAddressNotEquals() throws Exception {
 
-        orderService.create("test@example.com", "서울특별시 1A", "12345", List.of(new OrderItem()));
+        OrderItem orderItem1 = orderItemRepository.findById(1L).get();
+        OrderItem orderItem2 = orderItemRepository.findById(2L).get();
+        orderService.create("test@example.com", "서울특별시 1A", "12345", List.of(orderItem1, orderItem2));
 
         String jsonPayload = createOrderJson("test@example.com", "서울특별시 5A",
-                "12345", 1, 1000, 2, "path/to/image.jpg");
+                "12345", 1, "coffee 1", 1000, 2, "path/to/image.jpg");
 
         // 요청 수행 및 결과 추출
         MvcResult mvcResult = mvc.perform(post("/orders/processPayment")
@@ -104,20 +114,21 @@ public class ApiV1OrderControllerTest5 {
         assertThat(newOrderObj).isNotNull();
 
         // Order 객체로 캐스팅 후, email 속성 검증
-        Order newOrder = (Order) newOrderObj;
+        OrderIntegrationDto newOrder = (OrderIntegrationDto) newOrderObj;
         assertThat(newOrder.getEmail()).isEqualTo(email);
     }
 
-    private String createOrderJson(String email, String address, String zipCode, int itemId, int price, int quantity, String imagePath) {
+    private String createOrderJson(String email, String address, String zipCode, long id, String name, int price, int quantity, String imagePath) {
         return "{" +
                 "\"email\": \"" + email + "\"," +
                 "\"address\": \"" + address + "\"," +
                 "\"zipCode\": \"" + zipCode + "\"," +
-                "\"orderItems\": [" +
+                "\"items\": [" +
                 "{" +
-                "\"itemId\": " + itemId + "," +
+                "\"id\": " + id + "," +
+                "\"name\": \"" + name + "\"," +
                 "\"price\": " + price + "," +
-                "\"quantity\": " + quantity + "," +
+                "\"quantity\": " + quantity + "," + // quantity 추가
                 "\"imagePath\": \"" + imagePath + "\"" +
                 "}" +
                 "]" +
