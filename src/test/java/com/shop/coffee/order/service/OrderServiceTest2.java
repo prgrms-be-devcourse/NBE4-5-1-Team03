@@ -2,6 +2,7 @@ package com.shop.coffee.order.service;
 
 import com.shop.coffee.item.entity.Item;
 import com.shop.coffee.order.OrderStatus;
+import com.shop.coffee.order.dto.AdminOrderDetailDto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.orderitem.entity.OrderItem;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -122,16 +124,18 @@ class OrderServiceTest2 {
     }
 
     @Test
-    @DisplayName("이메일로 주문 조회 - 존재 여부 확인")
+    @DisplayName("이메일과 수정된 날짜로 주문 조회 - 존재 여부 확인")
     void test5() {
         // given
         String email = "user1@example.com";
-        when(orderRepository.findByEmail(email)).thenReturn(Optional.of(order1));
+        LocalDateTime modifiedAt = LocalDateTime.now();
+        Order order = new Order();
+        when(orderRepository.findByEmailAndModifiedAt(email, modifiedAt)).thenReturn(Optional.of(order));
 
         // when
-        Optional<Object> orderOptional = orderRepository.findByEmail(email);
+        AdminOrderDetailDto orderDetail = orderService.getOrderByEmailAndModifiedAt(email, modifiedAt);
 
         // then
-        assertTrue(orderOptional.isPresent());
+        assertNotNull(orderDetail);
     }
 }

@@ -3,12 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <title>Email Input</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@1.14.0/dist/full.css" rel="stylesheet">
+    <style>
+        .bg-white {
+            padding: 2rem;
+            width: 30rem;
+        }
+        .light-text {
+            color: #A0A0A0;
+            margin-top: 1rem;
+            display: flex;
+            white-space: nowrap;
+            align-items: center;
+        }
+        .btn-black {
+            background-color: #2C2C2C;
+            border-color: #2C2C2C;
+        }
+        .input-with-icon {
+            position: relative;
+        }
+        .input-with-icon input {
+            padding-right: 2.5rem;
+        }
+        .input-with-icon svg {
+            position: absolute;
+            right: 0.75rem;
+            top: 40%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        .text-center {
+            border: 2px solid black;
+            padding: 2rem;
+            width: 60%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .home-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .home-button svg {
+            width: 2rem;
+            height: 2rem;
+            position: absolute;
+            left: 12.5%;
+            right: 12.5%;
+            top: 8.33%;
+            bottom: 8.33%;
+            border: 4px solid #1E1E1E;
+        }
+    </style>
 </head>
-<body>
-<form action="/orders/check-email" method="post">
-    <label for="email">주문 내역 확인</label>
-    <input type="email" id="email" name="email" required>
-    <button type="submit">주문 내역 확인하기</button>
-</form>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+<button class="home-button" onclick="location.href='/orders/item-list'">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+    </svg>
+</button>
+<h1 class="text-4xl font-bold absolute top-12">Grids & Circle</h1>
+<div class="text-center">
+    <div class="bg-white p-8 rounded shadow-md w-96">
+        <form action="/orders/check-email" method="post">
+        <label for="email" class="block text-2xl font-bold mb-2">주문 내역 확인</label>
+        <p class="text-sm light-text mb-4">주문 내역을 확인하시려면 이메일을 입력해주세요</p>
+        <div class="input-with-icon">
+            <input type="email" id="email" name="email" class="input input-bordered w-full mb-4" placeholder="example@email.com" required>
+            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 3a2 2 0 012-2h12a2 2 0 012 2v14a2 2 0 01-2 2H4a2 2 0 01-2-2V3zm2 0v14h12V3H4zm1.5 2.5l5 3.5 5-3.5V5l-5 3.5L5.5 5v.5z" />
+            </svg>
+        </div>
+        <button type="submit" class="btn btn-black w-full">주문 내역 확인하기</button>
+        <div class="light-text">
+            ✅ 주문 시 입력하신 이메일 주소를 입력해주세요
+        </div>
+        <div class="light-text">
+            ✅ 이메일 주소는 정확하게 입력해주세요
+        </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>
