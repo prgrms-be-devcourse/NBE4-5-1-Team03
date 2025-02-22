@@ -24,7 +24,7 @@
         <td th:text="${order.totalPrice}"></td>
         <td th:text="${order.summaryItemName}"></td>
         <td>
-            <a th:href="@{/admin/order-detail(email=${order.email})}">주문상세</a> <!-- Order detail button added -->
+            <a th:href="@{/admin/order-detail(email=${order.email},modifiedAt=${order.modifiedAt})}">주문상세</a>
         </td>
     </tbody>
 </table>

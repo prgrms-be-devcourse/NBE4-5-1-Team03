@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -27,8 +28,8 @@ public class ApiV1AdminController {
     }
 
     @GetMapping("/order-detail")
-    public String showAdminOrderDetail(@RequestParam("email") String email, Model model) {
-        AdminOrderDetailDto order = orderService.getOrderByEmail(email);
+    public String showAdminOrderDetail(@RequestParam("email") String email, LocalDateTime modifiedAt, Model model) {
+        AdminOrderDetailDto order = orderService.getOrderByEmailAndModifiedAt(email, modifiedAt);
         model.addAttribute("order", order);
         return "admin_order_detail";
 

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,10 +48,9 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public AdminOrderDetailDto getOrderByEmail(String email) {
-        Order order = (Order) orderRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException(NOSINGLEORDER.getMessage()));
-        return new AdminOrderDetailDto(order);
+    public AdminOrderDetailDto getOrderByEmailAndModifiedAt(String email, LocalDateTime modifiedAt) {
+        Optional<Order> order = orderRepository.findByEmailAndModifiedAt(email, modifiedAt);
+        return order.map(AdminOrderDetailDto::new).orElseThrow(() -> new EntityNotFoundException(NOSINGLEORDER.getMessage()));
     }
 
     @Transactional(readOnly = true)

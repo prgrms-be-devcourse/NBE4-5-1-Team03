@@ -3,6 +3,7 @@ import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,5 +24,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByEmailAndOrderStatus(String email, OrderStatus orderStatus);
     Optional<Order> findByEmailAndOrderStatusAndAddressAndZipcode(String email, OrderStatus orderStatus, String address, String zipCode);
 
-    Optional<Object> findByEmail(String email);
+    Optional<Order> findByEmailAndModifiedAt(String email, LocalDateTime modifiedAt);
 }
