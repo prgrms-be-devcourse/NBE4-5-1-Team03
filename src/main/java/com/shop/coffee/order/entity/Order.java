@@ -65,4 +65,8 @@ public class Order extends BaseEntity {
         this.zipcode = zipcode;
     }
 
+    public void addTotalPrice(int totalPrice) {
+        this.totalPrice += totalPrice;
+    }
+
 }
