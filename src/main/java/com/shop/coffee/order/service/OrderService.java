@@ -44,9 +44,9 @@ public class OrderService {
     public List<OrderSummaryDto> getOrders(OrderStatus orderStatus) {
         List<Order> orders;
         if (orderStatus == null) {
-            orders = orderRepository.findAll(); // 전체 주문 조회
+            orders = orderRepository.findAllByOrderByModifiedAtDesc(); // 전체 주문 조회
         } else {
-            orders = orderRepository.findByOrderStatus(orderStatus); // 주문 상태에 따른 조회
+            orders = orderRepository.findByOrderStatusOrderByModifiedAtDesc(orderStatus); // 주문 상태에 따른 조회
         }
         if (orders.isEmpty()) {
             throw new EntityNotFoundException(NOSINGLEORDER.getMessage());
