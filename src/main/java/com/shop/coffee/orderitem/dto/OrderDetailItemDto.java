@@ -3,8 +3,10 @@ package com.shop.coffee.orderitem.dto;
 import com.shop.coffee.item.dto.ItemDto;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class OrderDetailItemDto {
 
     private Long id;
