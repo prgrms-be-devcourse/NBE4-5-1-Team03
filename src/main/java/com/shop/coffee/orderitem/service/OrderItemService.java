@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.shop.coffee.global.exception.ErrorCode.NO_SINGLE_ITEM;
+import static com.shop.coffee.global.exception.ErrorCode.ITEM_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class OrderItemService {
 
         for(ItemToOrderItemDto item: items) {
             Item entityItem = itemRepository.findById(item.getId())
-                    .orElseThrow(() -> new EntityNotFoundException(NO_SINGLE_ITEM.getMessage()));
+                    .orElseThrow(() -> new EntityNotFoundException(ITEM_NOT_FOUND.getMessage()));
 
             newOrder.addOrderItem(new OrderItem(newOrder, entityItem, item.getPrice(), item.getQuantity(), item.getImagePath()));
         }
