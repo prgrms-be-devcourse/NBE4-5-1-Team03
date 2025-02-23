@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+    <title>주문 상세화면</title>
+</head>
+<body>
+<div class="min-h-screen">
+    <div class="container px-4 w-full pt-8">
+        <div class="flex mb-4 w-full relative h-12">
+            <button th:data-email="${orderDetail.getEmail()}"
+                    onclick="handleBackNavigation(this.getAttribute('data-email'))"
+                    class="w-12 h-12 flex items-center justify-center"
+                    id="backButton">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M5 12L12 19M5 12L12 5" />
+                </svg>
+            </button>
+            <h1 class="text-2xl font-bold flex-1 text-center pr-8">Grids & Circle</h1>
+        </div>
+
+        <div class="w-full max-w-4xl mx-auto">
+            <div class="card bg-base-100 border border-black shadow-lg">
+                <div class="card-body p-6">
+                    <div class="flex gap-2">
+                        <div class="flex-shrink-0" style="height: 3rem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+                                <path d="M19 6.5l-7-4-7 4v11l7 4 7-4v-11z" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <path d="M5 6.5l7 4 7-4" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 10.5v11" fill="none" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1 flex items-center">
+                            <span class="text-base text-gray-500" th:text="|배송 시작일 : ${orderDetail.getShippingStartDate()} → ${orderDetail.getAddress()}|"></span>
+                        </div>
+
+                        <a th:if="${orderDetail.getOrderStatus() == T(com.shop.coffee.order.OrderStatus).RECEIVED}"
+                           th:href="@{|/orders/edit/${orderDetail.getId()}|}"
+                           class="bg-blue-500 text-white px-4 py-1.5 rounded text-sm flex items-center inline-flex cursor-pointer">
+                            <span>✏️</span>
+                            <span class="ml-1">수정하기</span>
+                        </a>
+                    </div>
+
+                    <div class="border-t my-3"></div>
+
+                    <div class="space-y-4 mb-6 max-h-48 overflow-y-auto">
+                        <div th:each="item : ${orderDetail.getOrderItems()}"
+                             class="flex justify-between items-center text-base">
+                            <div>
+                                <span th:text="${item.getItemName()}"></span>
+                                <span class="text-gray-500 ml-2" th:text="|${item.getQuantity()}개|"></span>
+                            </div>
+                            <div th:text="|${#numbers.formatInteger(item.getPrice() * item.getQuantity(), 1, 'COMMA')}원|"></div>
+                        </div>
+                    </div>
+
+                    <div class="border-t my-3"></div>
+
+                    <div class="flex justify-between text-lg">
+                        <span>총 결제 금액</span>
+                        <span th:text="|${#numbers.formatInteger(orderDetail.getTotalPrice(), 1, 'COMMA')}원|"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/order_detail.js}"></script>
+</body>
+</html>
