@@ -34,4 +34,8 @@ public class OrderItem extends BaseEntity {
     @Column(length = 255, nullable = true)
     private String imagePath;
 
+    public void addQuantity(int quantity) {
+        this.quantity += quantity;
+    }
+
 }
