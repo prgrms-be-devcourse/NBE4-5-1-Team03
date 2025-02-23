@@ -6,6 +6,7 @@ import com.shop.coffee.order.dto.AdminOrderDetailDto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.orderitem.entity.OrderItem;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -86,21 +86,15 @@ class OrderServiceTest2 {
     }
 
     @Test
-    @DisplayName("주문이 없는 경우 빈 리스트 반환")
+    @DisplayName("주문이 없는 경우 EntityNotFoundException 발생")
     void test3() {
-
         // given
         // 주문이 없는 경우
         when(orderRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // when
-        // getOrders의 인자로 null이 왔으므로 모든 주문 조회
-        List<com.shop.coffee.order.dto.OrderSummaryDto> orders = orderService.getOrders(null);
-
-        // then
-        // 주문이 없으므로 빈 리스트 반환
-        assertNotNull(orders);
-        assertEquals(0, orders.size());
+        // when & then
+        // getOrders의 인자로 null이 왔으므로 모든 주문 조회 시 EntityNotFoundException 발생 기대
+        assertThrows(EntityNotFoundException.class, () -> orderService.getOrders(null));
     }
 
     @Test
@@ -124,16 +118,15 @@ class OrderServiceTest2 {
     }
 
     @Test
-    @DisplayName("이메일과 수정된 날짜로 주문 조회 - 존재 여부 확인")
+    @DisplayName("ID로 관리자 주문 상세 조회 - 존재 여부 확인")
     void test5() {
         // given
-        String email = "user1@example.com";
-        LocalDateTime modifiedAt = LocalDateTime.now();
+        Long orderId = 1L;
         Order order = new Order();
-        when(orderRepository.findByEmailAndModifiedAt(email, modifiedAt)).thenReturn(Optional.of(order));
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
 
         // when
-        AdminOrderDetailDto orderDetail = orderService.getOrderByEmailAndModifiedAt(email, modifiedAt);
+        AdminOrderDetailDto orderDetail = orderService.getAdminOrderDetailDtoById(orderId);
 
         // then
         assertNotNull(orderDetail);

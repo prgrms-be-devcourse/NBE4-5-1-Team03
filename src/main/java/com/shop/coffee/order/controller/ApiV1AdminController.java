@@ -6,11 +6,8 @@ import com.shop.coffee.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -28,11 +25,17 @@ public class ApiV1AdminController {
     }
 
     @GetMapping("/order-detail")
-    public String showAdminOrderDetail(@RequestParam("email") String email, LocalDateTime modifiedAt, Model model) {
-        AdminOrderDetailDto order = orderService.getOrderByEmailAndModifiedAt(email, modifiedAt);
+    public String showAdminOrderDetail(@RequestParam("id") Long id, Model model) {
+        AdminOrderDetailDto order = orderService.getAdminOrderDetailDtoById(id);
         model.addAttribute("order", order);
         return "admin_order_detail";
+    }
 
+    @DeleteMapping("/delete-order")
+    @ResponseBody
+    public String deleteOrder(@RequestParam("id") Long id) {
+        orderService.deleteOrder(id);
+        return "admin_order_list";
     }
 }
 
