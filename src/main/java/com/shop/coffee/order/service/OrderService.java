@@ -47,6 +47,15 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    // 전체 조회
+    @Transactional(readOnly = true)
+    public List<OrderDto> getAllOrders() {
+        List<Order> orders = orderRepository.findAllByOrderByCreatedAtDesc(); // createdAt 내림차순 정렬
+        return orders.stream()
+                .map(OrderDto::new) // Order -> OrderDto 변환
+                .collect(Collectors.toList());
+    }
+
     // 전체 주문 조회 또는 주문 상태에 따른 조회 후 DTO로 변환하여 반환
     @Transactional
     public List<OrderSummaryDto> getOrders(OrderStatus orderStatus) {
@@ -76,6 +85,7 @@ public class OrderService {
                 .map(OrderDto::new) // Order -> OrderDto 변환
                 .collect(Collectors.toList());
     }
+
 
     @Transactional
     public Order create(String email, String address, String zipCode, List<OrderItem> orderItems) {
@@ -264,4 +274,6 @@ public class OrderService {
         order.getOrderItems().sort(Comparator.comparing(orderItem -> orderItem.getItem().getName())); // 이름순 정렬
         return new OrderEditDetailDto(order, allItems);
     }
+
+
 }
