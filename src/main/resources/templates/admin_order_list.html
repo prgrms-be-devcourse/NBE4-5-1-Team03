@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="ko">
 <head>
     <title>Orders</title>
     <script>
@@ -41,7 +41,8 @@
         <td th:text="${order.modifiedAt}"></td>
         <td th:text="${order.totalPrice}"></td>
         <td th:text="${order.summaryItemName}"></td>
-        <td th:text="${order.summaryImagePath}"></td>
+        <td>
+        <img th:src="@{${order.summaryImagePath}}" alt="" width="100" height="100">
         <td>
             <a th:href="@{/admin/order-detail(id=${order.id})}">주문상세</a>
         </td>
