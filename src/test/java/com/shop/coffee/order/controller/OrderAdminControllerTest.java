@@ -1,6 +1,5 @@
-package com.shop.coffee;
+package com.shop.coffee.order.controller;
 
-import com.shop.coffee.order.controller.ApiV1AdminController;
 import com.shop.coffee.order.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

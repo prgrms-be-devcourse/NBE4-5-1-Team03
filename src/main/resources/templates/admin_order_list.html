@@ -1,7 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="ko">
 <head>
     <title>Orders</title>
+    <script>
+        function deleteOrder(orderId) {
+            if (confirm('정말로 삭제하시겠습니까?')) {
+                fetch(`/admin/delete-order?id=${orderId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = '/admin/orders';
+                        } else {
+                            alert('주문 삭제에 실패했습니다.');
+                        }
+                    });
+            }
+        }
+    </script>
 </head>
 <body>
 <h1>Orders</h1>
@@ -13,7 +29,9 @@
         <th>Modified At</th>
         <th>Total Price</th>
         <th>Item Name</th>
-        <th>Actions</th>
+        <th>Summary Image Path</th>
+        <th>Actions1</th>
+        <th>Actions2</th>
     </tr>
     </thead>
     <tbody>
@@ -24,8 +42,14 @@
         <td th:text="${order.totalPrice}"></td>
         <td th:text="${order.summaryItemName}"></td>
         <td>
-            <a th:href="@{/admin/order-detail(email=${order.email},modifiedAt=${order.modifiedAt})}">주문상세</a>
+        <img th:src="@{${order.summaryImagePath}}" alt="" width="100" height="100">
+        <td>
+            <a th:href="@{/admin/order-detail(id=${order.id})}">주문상세</a>
         </td>
+        <td>
+            <a href="#" th:href="|javascript:deleteOrder(${order.id})|">주문삭제</a>
+        </td>
+    </tr>
     </tbody>
 </table>
 </body>
