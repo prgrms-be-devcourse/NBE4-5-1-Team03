@@ -62,14 +62,7 @@ public class OrderService {
                 .map(OrderDto::new) // Order -> OrderDto 변환
                 .collect(Collectors.toList());
     }
-    // 이메일로 주문 조회
-    @Transactional(readOnly = true)
-    public List<OrderDto> getOrdersByEmail(String email) {
-        List<Order> orders = orderRepository.findByEmail(email);
-        return orders.stream()
-                .map(OrderDto::new)
-                .collect(Collectors.toList());
-    }
+
     // 전체 주문 조회 또는 주문 상태에 따른 조회 후 DTO로 변환하여 반환
     @Transactional
     public List<OrderSummaryDto> getOrders(OrderStatus orderStatus) {
