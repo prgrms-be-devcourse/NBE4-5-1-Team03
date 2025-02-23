@@ -27,5 +27,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByEmailAndOrderStatusAndAddressAndZipcode(String email, OrderStatus orderStatus, String address, String zipCode);
     Optional<Object> findByEmail(String email);
     @Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.orderItems WHERE o.id = :id")
-    Optional<Order> findByIdOrderWithItems(@Param("id") Long orderId);
+    Optional<Order> findByIdOrderWithOrderItems(@Param("id") Long orderId);
 }
