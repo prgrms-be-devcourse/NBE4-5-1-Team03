@@ -1,10 +1,10 @@
 package com.shop.coffee.order.controller;
 
-import com.shop.coffee.order.dto.OrderDetailDto;
-import com.shop.coffee.order.dto.OrderDto;
-import com.shop.coffee.order.dto.OrderIntegrationViewDto;
-import com.shop.coffee.order.dto.OrderPaymentRequestDto;
+import com.shop.coffee.order.OrderStatus;
+import com.shop.coffee.order.dto.*;
+import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.service.OrderService;
+import com.shop.coffee.orderitem.entity.OrderItem;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.shop.coffee.global.exception.ErrorCode.NO_EMAIL;
+import static com.shop.coffee.global.exception.ErrorCode.NO_ORDER_NUMBER;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,9 +27,15 @@ public class ApiV1OrderController {
 
     private final OrderService orderService;
 
+    // 주문 번호로 주문 단건 조회
     @GetMapping("/{id}")
-    public OrderDto getOrderById(@PathVariable Long id) {
-        return orderService.getOrderById(id);
+    public String getOrderById(@PathVariable Long id, Model model) {
+        OrderDto orderDto = orderService.getOrderById(id);
+        if(orderDto == null) {
+            throw new IllegalArgumentException(NO_ORDER_NUMBER.getMessage()+": " + id);
+        }
+        model.addAttribute("order", orderDto);
+        return "order_list";
     }
 
     @GetMapping
@@ -95,10 +107,14 @@ public class ApiV1OrderController {
         return "email_input";
     }
 
-    // 이메일에 대한 주문 목록 조회 뷰
+    // 이메일에 해당하는 주문 목록을 조회 - 주문상태 구분하여 뷰 전달
     @GetMapping("/order-list")
-    public String showOrderList(@RequestParam("email") String email, Model model) {
-        model.addAttribute("email", email);
+    public String showOrderListGroupByOrderStatus(@RequestParam("email") String email, Model model) {
+        OrderListDto orderListDto = orderService.getGroupedOrdersByEmail(email);
+
+        model.addAttribute("receivedOrder", orderListDto.getMergedReceivedOrder());
+        model.addAttribute("shippingOrdersByDate", orderListDto.getShippingOrdersByDate());
+
         return "order_list";
     }
 

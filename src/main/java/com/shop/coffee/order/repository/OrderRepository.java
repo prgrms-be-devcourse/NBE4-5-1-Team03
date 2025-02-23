@@ -25,7 +25,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByOrderByCreatedAtDesc();
     Optional<Order> findByEmailAndOrderStatus(String email, OrderStatus orderStatus);
     Optional<Order> findByEmailAndOrderStatusAndAddressAndZipcode(String email, OrderStatus orderStatus, String address, String zipCode);
-    Optional<Object> findByEmail(String email);
+    Optional<Object> findFirstByEmailOrderByCreatedAtDesc(String email);
+
+    // 이메일에 해당하는 주문목록 조회
+    List<Order> findByEmail(String email);
     @Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.orderItems WHERE o.id = :id")
     Optional<Order> findByIdOrderWithOrderItems(@Param("id") Long orderId);
 }
