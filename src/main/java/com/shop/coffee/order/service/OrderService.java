@@ -1,13 +1,12 @@
 package com.shop.coffee.order.service;
 
+import com.shop.coffee.item.dto.ItemToOrderItemDto;
 import com.shop.coffee.order.OrderStatus;
-import com.shop.coffee.order.dto.AdminOrderDetailDto;
-import com.shop.coffee.order.dto.OrderDetailDto;
-import com.shop.coffee.order.dto.OrderDto;
-import com.shop.coffee.order.dto.OrderIntegrationViewDto;
+import com.shop.coffee.order.dto.*;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.orderitem.entity.OrderItem;
+import com.shop.coffee.orderitem.service.OrderItemService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ import static com.shop.coffee.global.exception.ErrorCode.NOSINGLEORDER;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderItemService orderItemService;
   
     @Transactional(readOnly = true)
     public OrderDto getOrderById(Long id) {
@@ -68,22 +68,27 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderIntegrationViewDto processPayment(String email, String address, String zipCode, List<OrderItem> orderItems) {
+    public OrderIntegrationViewDto processPayment(String email, String address, String zipCode, List<ItemToOrderItemDto> items) {
         Optional<Order> orderOptional = this.orderRepository.findByEmailAndOrderStatus(email, OrderStatus.RECEIVED);
 
         if (orderOptional.isPresent()) {
             Optional<Order> orderWithAddress = this.orderRepository.findByEmailAndOrderStatusAndAddressAndZipcode(
                     email, OrderStatus.RECEIVED, address, zipCode);
-            Order newOrder = new Order(email, address, zipCode, orderItems);
+
+            Order newOrder = new Order(email, address, zipCode, new ArrayList<>());
+            orderItemService.createListItem(newOrder, items);
 
             if(orderWithAddress.isPresent()) {
-                return new OrderIntegrationViewDto("same_location_order_integration", orderWithAddress.get(), newOrder);
+                return new OrderIntegrationViewDto("same_location_order_integration", new OrderIntegrationDto(orderWithAddress.get()), new OrderIntegrationDto(newOrder));
             } else {
-                return new OrderIntegrationViewDto("different_location_order_integration", orderOptional.get(), newOrder);
+                return new OrderIntegrationViewDto("different_location_order_integration",  new OrderIntegrationDto(orderOptional.get()), new OrderIntegrationDto(newOrder));
             }
         } else {
-            Order newOrder = create(email, address, zipCode, orderItems);
-            return new OrderIntegrationViewDto("redirect:/orders", null, newOrder);
+            Order newOrder = new Order(email, address, zipCode, new ArrayList<>());
+            orderItemService.createListItem(newOrder, items);
+            orderRepository.save(newOrder);
+
+            return new OrderIntegrationViewDto("redirect:/orders/order-list", null, new OrderIntegrationDto(newOrder));
         }
     }
 
@@ -94,7 +99,7 @@ public class OrderService {
 
     @Transactional
     public OrderDetailDto updateOrder(Long orderId, OrderDetailDto orderDetailDto) {
-        Order existingOrder = orderRepository.findById(orderId)
+        Order existingOrder = orderRepository.findByIdOrderWithItems(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(NOSINGLEORDER.getMessage()));
 
         existingOrder.setAddress(orderDetailDto.getAddress());
@@ -129,4 +134,17 @@ public class OrderService {
         return orderRepository.existsByEmail(email);
     }
 
+    @Transactional
+    public OrderDetailDto getOrderDetailDtoById(long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException(NOSINGLEORDER.getMessage()));
+
+        return new OrderDetailDto(order);
+    }
+
+    @Transactional
+    public Order getOrderByIdWithItems(long orderId) {
+        return orderRepository.findByIdOrderWithItems(orderId)
+                .orElseThrow(() -> new IllegalArgumentException(NOSINGLEORDER.getMessage()));
+    }
 }
