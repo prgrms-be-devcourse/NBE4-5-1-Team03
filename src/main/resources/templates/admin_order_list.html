@@ -21,15 +21,20 @@
 </head>
 <body>
 <h1>Orders</h1>
+<div>
+    <a href="/admin/orders" class="button">전체</a>
+    <a href="/admin/orders?orderStatus=RECEIVED" class="button">주문접수</a>
+    <a href="/admin/orders?orderStatus=SHIPPING" class="button">배송시작</a>
+</div>
 <table>
     <thead>
     <tr>
         <th>Status</th>
         <th>Email</th>
-        <th>Modified At</th>
+        <th>shippingStartDate</th>
         <th>Total Price</th>
         <th>Item Name</th>
-        <th>Summary Image Path</th>
+        <th>Summary Image</th>
         <th>Actions1</th>
         <th>Actions2</th>
     </tr>
@@ -38,7 +43,7 @@
     <tr th:each="order : ${orders}">
         <td th:text="${order.orderStatus}"></td>
         <td th:text="${order.email}"></td>
-        <td th:text="${order.modifiedAt}"></td>
+        <td th:text="${order.shippingStartDate}"></td>
         <td th:text="${order.totalPrice}"></td>
         <td th:text="${order.summaryItemName}"></td>
         <td>

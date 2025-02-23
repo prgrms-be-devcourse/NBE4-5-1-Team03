@@ -2,6 +2,7 @@ package com.shop.coffee.order.service;
 
 import com.shop.coffee.item.entity.Item;
 import com.shop.coffee.order.OrderStatus;
+import com.shop.coffee.order.dto.OrderSummaryDto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.orderitem.entity.OrderItem;
@@ -50,8 +51,8 @@ class OrderServiceTest2 {
         order2.setOrderItems(List.of(orderItem2));
 
         // Mock 설정
-        lenient().when(orderRepository.findAll()).thenReturn(Arrays.asList(order1, order2));
-        lenient().when(orderRepository.findByOrderStatus(OrderStatus.RECEIVED)).thenReturn(Collections.singletonList(order1));
+        lenient().when(orderRepository.findAllByOrderByModifiedAtDesc()).thenReturn(Arrays.asList(order1, order2));
+        lenient().when(orderRepository.findByOrderStatusOrderByModifiedAtDesc(OrderStatus.RECEIVED)).thenReturn(Collections.singletonList(order1));
     }
 
     @Test
@@ -60,7 +61,7 @@ class OrderServiceTest2 {
 
         //  when
         //  getOrders의 인자로 null이 왔으므로 모든 주문 조회
-        List<com.shop.coffee.order.dto.OrderSummaryDto> orders = orderService.getOrders(null);
+        List<OrderSummaryDto> orders = orderService.getOrders(null);
 
         // then
         // 2개의 주문이 조회되어야 함
@@ -88,7 +89,7 @@ class OrderServiceTest2 {
     void test3() {
         // given
         // 주문이 없는 경우
-        when(orderRepository.findAll()).thenReturn(Collections.emptyList());
+        when(orderRepository.findAllByOrderByModifiedAtDesc()).thenReturn(Collections.emptyList());
 
         // when & then
         // getOrders의 인자로 null이 왔으므로 모든 주문 조회 시 EntityNotFoundException 발생 기대
