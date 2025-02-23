@@ -107,4 +107,18 @@ public class ApiV1OrderController {
     public String showItemList() {
         return "item_list";
     }
+
+    @GetMapping("/detail/{id}")
+    public String showOrderDetail(@PathVariable long id, Model model) {
+        OrderDetailDto orderDetailDto = this.orderService.getOrderDetailDtoById(id);
+        model.addAttribute("orderDetail", orderDetailDto);
+        return "order_detail";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable long id, Model model) {
+        OrderDetailDto orderDetailDto = this.orderService.getOrderDetailDtoById(id);
+        model.addAttribute("orderDetail", orderDetailDto);
+        return "order_detail_modification";
+    }
 }
