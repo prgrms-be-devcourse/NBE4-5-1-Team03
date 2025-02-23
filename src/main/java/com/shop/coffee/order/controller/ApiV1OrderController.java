@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
@@ -38,9 +41,17 @@ public class ApiV1OrderController {
         return "order_list";
     }
 
+    // 이메일로 주문 조회
     @GetMapping
-    public List<OrderDto> getAllOrders() {
-        return orderService.getAllOrders();
+    public String getOrdersByEmail(@RequestParam(required = false) String email, Model model) {
+        if (email != null) {
+            List<OrderDto> orders = orderService.getOrdersByEmail(email);
+            model.addAttribute("orders", orders);
+            return "order_list";
+        } else {
+            model.addAttribute("orders", List.of()); //데이터가 없을 때 빈 리스트를 전달
+            return "same_location_order_integration";
+        }
     }
 
     @PostMapping("/processPayment")

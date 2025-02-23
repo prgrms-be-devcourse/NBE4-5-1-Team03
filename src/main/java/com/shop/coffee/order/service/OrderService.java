@@ -37,6 +37,8 @@ public class OrderService {
     private final OrderItemService orderItemService;
     private final ItemRepository itemRepository;
 
+
+    // 주문 ID로 주문 조회
     @Transactional(readOnly = true)
     public OrderDto getOrderById(Long id) {
         Order order = orderRepository.findById(id)
@@ -52,6 +54,22 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    // 전체 조회
+    @Transactional(readOnly = true)
+    public List<OrderDto> getAllOrders() {
+        List<Order> orders = orderRepository.findAllByOrderByCreatedAtDesc(); // createdAt 내림차순 정렬
+        return orders.stream()
+                .map(OrderDto::new) // Order -> OrderDto 변환
+                .collect(Collectors.toList());
+    }
+    // 이메일로 주문 조회
+    @Transactional(readOnly = true)
+    public List<OrderDto> getOrdersByEmail(String email) {
+        List<Order> orders = orderRepository.findByEmail(email);
+        return orders.stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
+    }
     // 전체 주문 조회 또는 주문 상태에 따른 조회 후 DTO로 변환하여 반환
     @Transactional
     public List<OrderSummaryDto> getOrders(OrderStatus orderStatus) {
@@ -74,13 +92,6 @@ public class OrderService {
 //        return new AdminOrderDetailDto(order);
 //    }
 
-    @Transactional(readOnly = true)
-    public List<OrderDto> getAllOrders() {
-        List<Order> orders = orderRepository.findAllByOrderByCreatedAtDesc(); // createdAt 내림차순 정렬
-        return orders.stream()
-                .map(OrderDto::new) // Order -> OrderDto 변환
-                .collect(Collectors.toList());
-    }
 
     @Transactional
     public Order create(String email, String address, String zipCode, List<OrderItem> orderItems) {
@@ -249,4 +260,6 @@ public class OrderService {
         return orderRepository.findByIdOrderWithOrderItems(orderId)
                 .orElseThrow(() -> new IllegalArgumentException(NOSINGLEORDER.getMessage()));
     }
+
+
 }
