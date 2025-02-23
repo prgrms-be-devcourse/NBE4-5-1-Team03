@@ -21,7 +21,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+@SpringBootTest(classes = com.shop.coffee.CoffeeApplication.class)
 @Transactional
 public class OrderServiceTest5 {
 
