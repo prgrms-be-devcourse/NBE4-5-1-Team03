@@ -2,7 +2,6 @@ package com.shop.coffee.order.service;
 
 import com.shop.coffee.item.entity.Item;
 import com.shop.coffee.order.OrderStatus;
-import com.shop.coffee.order.dto.AdminOrderDetailDto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.orderitem.entity.OrderItem;
@@ -18,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.lenient;
@@ -115,20 +113,5 @@ class OrderServiceTest2 {
         // then
         assertTrue(exists);
         assertFalse(notExists);
-    }
-
-    @Test
-    @DisplayName("ID로 관리자 주문 상세 조회 - 존재 여부 확인")
-    void test5() {
-        // given
-        Long orderId = 1L;
-        Order order = new Order();
-        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
-
-        // when
-        AdminOrderDetailDto orderDetail = orderService.getAdminOrderDetailDtoById(orderId);
-
-        // then
-        assertNotNull(orderDetail);
     }
 }

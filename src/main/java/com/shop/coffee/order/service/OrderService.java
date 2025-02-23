@@ -1,6 +1,5 @@
 package com.shop.coffee.order.service;
 
-import com.shop.coffee.item.dto.ItemDto;
 import com.shop.coffee.item.dto.ItemToOrderItemDto;
 import com.shop.coffee.item.entity.Item;
 import com.shop.coffee.item.repository.ItemRepository;
@@ -53,12 +52,6 @@ public class OrderService {
             throw new EntityNotFoundException(NOSINGLEORDER.getMessage());
         }
         return orders.stream().map(OrderSummaryDto::new).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public AdminOrderDetailDto getAdminOrderDetailDtoById(Long id) {
-        Optional<Order> order = orderRepository.findById(id);
-        return order.map(AdminOrderDetailDto::new).orElseThrow(() -> new EntityNotFoundException(NOSINGLEORDER.getMessage()));
     }
 
     @Transactional(readOnly = true)
