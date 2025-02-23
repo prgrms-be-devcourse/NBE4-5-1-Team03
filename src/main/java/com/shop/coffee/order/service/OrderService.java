@@ -1,10 +1,14 @@
 package com.shop.coffee.order.service;
 
+import com.shop.coffee.item.dto.ItemDto;
 import com.shop.coffee.item.dto.ItemToOrderItemDto;
+import com.shop.coffee.item.entity.Item;
+import com.shop.coffee.item.repository.ItemRepository;
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.dto.*;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
+import com.shop.coffee.orderitem.dto.OrderDetailItemDto;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import com.shop.coffee.orderitem.service.OrderItemService;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.shop.coffee.global.exception.ErrorCode.ITEM_NOT_FOUND;
 import static com.shop.coffee.global.exception.ErrorCode.NOSINGLEORDER;
 
 @Service
@@ -24,6 +29,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderItemService orderItemService;
+    private final ItemRepository itemRepository;
   
     @Transactional(readOnly = true)
     public OrderDto getOrderById(Long id) {
@@ -99,32 +105,37 @@ public class OrderService {
 
     @Transactional
     public OrderDetailDto updateOrder(Long orderId, OrderDetailDto orderDetailDto) {
-        Order existingOrder = orderRepository.findByIdOrderWithItems(orderId)
+        Order existingOrder = orderRepository.findByIdOrderWithOrderItems(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(NOSINGLEORDER.getMessage()));
 
         existingOrder.setAddress(orderDetailDto.getAddress());
         existingOrder.setZipcode(orderDetailDto.getZipcode());
 
-        List<OrderItem> existingItems = existingOrder.getOrderItems();
-        List<OrderItem> newItems = orderDetailDto.getOrderItems();
-
-        Map<Long, OrderItem> existingItemMap = existingItems.stream()
+        Map<Long, OrderItem> existingItemMap = existingOrder.getOrderItems().stream()
                 .collect(Collectors.toMap(OrderItem::getId, item -> item));
 
-        List<OrderItem> updatedItems = new ArrayList<>();
+        List<OrderItem> itemsToRemove = new ArrayList<>();
+        List<OrderItem> itemsToAdd = new ArrayList<>();
 
-        for (OrderItem newItem : newItems) {
-            if (newItem.getId() != null && existingItemMap.containsKey(newItem.getId())) {
-                OrderItem existingItem = existingItemMap.get(newItem.getId());
-                existingItem.setQuantity(newItem.getQuantity());
-                updatedItems.add(existingItem);
+        for (OrderDetailItemDto dto : orderDetailDto.getOrderItems()) {
+            Item entityItem = itemRepository.findById(dto.getItemId())
+                    .orElseThrow(() -> new EntityNotFoundException(ITEM_NOT_FOUND.getMessage()));
+
+            if (dto.getId() != null && existingItemMap.containsKey(dto.getId())) {
+                OrderItem existingItem = existingItemMap.get(dto.getId());
+                existingItem.setQuantity(dto.getQuantity());
+                existingItemMap.remove(dto.getId());
             } else {
-                OrderItem orderItem = new OrderItem(existingOrder, newItem.getItem(), newItem.getPrice(), newItem.getQuantity(), newItem.getImagePath());
-                updatedItems.add(orderItem);
+                OrderItem newItem = new OrderItem(existingOrder, entityItem, dto.getPrice(), dto.getQuantity(), dto.getImagePath());
+                itemsToAdd.add(newItem);
             }
         }
 
-        existingOrder.setOrderItems(updatedItems);
+        itemsToRemove.addAll(existingItemMap.values());
+
+        existingOrder.getOrderItems().removeAll(itemsToRemove);
+
+        existingOrder.getOrderItems().addAll(itemsToAdd);
 
         return new OrderDetailDto(existingOrder);
     }
@@ -144,7 +155,7 @@ public class OrderService {
 
     @Transactional
     public Order getOrderByIdWithItems(long orderId) {
-        return orderRepository.findByIdOrderWithItems(orderId)
+        return orderRepository.findByIdOrderWithOrderItems(orderId)
                 .orElseThrow(() -> new IllegalArgumentException(NOSINGLEORDER.getMessage()));
     }
 }

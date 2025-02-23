@@ -28,5 +28,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByEmailAndModifiedAt(String email, LocalDateTime modifiedAt);
     Optional<Object> findByEmail(String email);
     @Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.orderItems WHERE o.id = :id")
-    Optional<Order> findByIdOrderWithItems(@Param("id") Long orderId);
+    Optional<Order> findByIdOrderWithOrderItems(@Param("id") Long orderId);
 }
