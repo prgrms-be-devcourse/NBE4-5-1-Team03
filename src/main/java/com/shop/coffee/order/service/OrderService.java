@@ -12,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.shop.coffee.global.exception.ErrorCode.NOSINGLEORDER;
@@ -34,7 +36,7 @@ public class OrderService {
 
     // 전체 주문 조회 또는 주문 상태에 따른 조회 후 DTO로 변환하여 반환
     @Transactional
-    public List<com.shop.coffee.order.dto.OrderSummaryDto> getOrders(OrderStatus orderStatus) {
+    public List<OrderSummaryDto> getOrders(OrderStatus orderStatus) {
         List<Order> orders;
         if (orderStatus == null) {
             orders = orderRepository.findAll(); // 전체 주문 조회
@@ -42,14 +44,14 @@ public class OrderService {
             orders = orderRepository.findByOrderStatus(orderStatus); // 주문 상태에 따른 조회
         }
         if (orders.isEmpty()) {
-            return Collections.emptyList(); // 주문이 없을 경우 빈 리스트 반환
+            throw new EntityNotFoundException(NOSINGLEORDER.getMessage());
         }
-        return orders.stream().map(com.shop.coffee.order.dto.OrderSummaryDto::new).collect(Collectors.toList());
+        return orders.stream().map(OrderSummaryDto::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public AdminOrderDetailDto getOrderByEmailAndModifiedAt(String email, LocalDateTime modifiedAt) {
-        Optional<Order> order = orderRepository.findByEmailAndModifiedAt(email, modifiedAt);
+    public AdminOrderDetailDto getAdminOrderDetailDtoById(Long id) {
+        Optional<Order> order = orderRepository.findById(id);
         return order.map(AdminOrderDetailDto::new).orElseThrow(() -> new EntityNotFoundException(NOSINGLEORDER.getMessage()));
     }
 
