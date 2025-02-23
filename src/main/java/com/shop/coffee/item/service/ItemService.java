@@ -1,6 +1,7 @@
 package com.shop.coffee.item.service;
 
 import com.shop.coffee.item.dto.ItemDto;
+import com.shop.coffee.item.entity.Item;
 import com.shop.coffee.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,4 +34,14 @@ public class ItemService {
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOSINGLEORDER.getMessage()));
     }
 
+    @Transactional(readOnly = true)
+    public List<Item> getAllItemEntities() {
+        return itemRepository.findAll();
+    }
+
+    @Transactional
+    public Item getItemByIdEntity(long id) {
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOSINGLEORDER.getMessage()));
+    }
 }
