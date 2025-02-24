@@ -32,19 +32,6 @@ public class ApiV1OrderController {
         return "order_list";
     }
 
-    // 이메일로 주문 조회
-    @GetMapping
-    public String getOrdersByEmail(@RequestParam(required = false) String email, Model model) {
-        if (email != null) {
-            List<OrderDto> orders = orderService.getOrdersByEmail(email);
-            model.addAttribute("orders", orders);
-            return "order_list";
-        } else {
-            model.addAttribute("orders", List.of()); //데이터가 없을 때 빈 리스트를 전달
-            return "same_location_order_integration";
-        }
-    }
-
     @PostMapping("/processPayment")
     public String processPayment(Model model, @RequestBody @Valid OrderPaymentRequestDto request
             , RedirectAttributes redirectAttributes) {

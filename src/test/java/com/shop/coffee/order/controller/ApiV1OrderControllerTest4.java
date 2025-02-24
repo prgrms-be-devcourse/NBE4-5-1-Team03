@@ -39,7 +39,7 @@ class ApiV1OrderControllerTest4 {
     @Test
     @DisplayName("이메일로 주문 목록 조회 - 정상 동작 및 뷰 반환 테스트")
     void testGetOrderListByEmail() throws Exception {
-        // ✅ OrderStatus를 명시적으로 설정하여 NPE 방지
+        // OrderStatus를 명시적으로 설정하여 NPE 방지
         OrderDto mockReceivedOrder = new OrderDto(
                 1L, "user5@example.com", "Address5", "Zipcode5",
                 OrderStatus.RECEIVED, // OrderStatus 설정
