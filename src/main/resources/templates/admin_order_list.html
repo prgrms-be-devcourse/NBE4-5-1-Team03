@@ -3,6 +3,19 @@
 <head>
     <title>Orders</title>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderStatus = urlParams.get('orderStatus');
+            const buttons = document.querySelectorAll('.button');
+
+            buttons.forEach(button => {
+                if ((orderStatus === null && button.getAttribute('href') === '/admin/orders') ||
+                    (orderStatus !== null && button.getAttribute('href').includes(orderStatus))) {
+                    button.style.fontWeight = 'bold';
+                }
+            });
+        });
+
         function deleteOrder(orderId) {
             if (confirm('정말로 삭제하시겠습니까?')) {
                 fetch(`/admin/delete-order?id=${orderId}`, {
@@ -18,44 +31,123 @@
             }
         }
     </script>
+    <style>
+        th {
+            display: none;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding-top: 10vh;
+        }
+        .buttons {
+            margin-bottom: 2rem;
+        }
+        .button {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+        .order-summary {
+            margin-top: 1.5rem;
+        }
+        .rounded-background {
+            background-color: #4880EE;
+            color: white;
+            border-radius: 15px;
+            padding: 5px;
+        }
+        .rounded-red-background {
+            background-color: red;
+            color: white;
+            border-radius: 15px;
+            padding: 5px;
+            text-decoration: none;
+        }
+        .rounded-blue-background {
+            background-color: #30B0C7;
+            color: white;
+            border-radius: 15px;
+            padding: 5px;
+            text-decoration: none;
+        }
+        .rounded-gray-background {
+            background-color: #DDDDDD;
+            color: black;
+            border-radius: 15px;
+            padding: 5px;
+        }
+        .spacing {
+            margin-bottom: 0.5rem;
+        }
+        table {
+            border-collapse: collapse;
+            width: 60%;
+        }
+        tr {
+            border: 1px solid #ddd;
+        }
+        td {
+            padding: 8px;
+        }
+    </style>
 </head>
 <body>
-<h1>Orders</h1>
-<div>
-    <a href="/admin/orders" class="button">전체</a>
-    <a href="/admin/orders?orderStatus=RECEIVED" class="button">주문접수</a>
-    <a href="/admin/orders?orderStatus=SHIPPING" class="button">배송시작</a>
+<div class="container">
+    <div class="buttons">
+        <a href="/admin/orders" class="button">전체</a>
+        <a href="/admin/orders?orderStatus=RECEIVED" class="button">주문접수</a>
+        <a href="/admin/orders?orderStatus=SHIPPING" class="button">배송시작</a>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Status</th>
+            <th>Email</th>
+            <th>Shipping Start Date</th>
+            <th>Total Price</th>
+            <th>Item Name</th>
+            <th>Summary Image</th>
+            <th>Actions1</th>
+            <th>Actions2</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td class="order-section image-section">
+                <img th:src="@{${order.summaryImagePath}}" alt="" width="100" height="100" style="margin-left: 10px;">
+            </td>
+            <td class="order-section">
+                <div>
+                    <div class="order-details">
+                        <span th:text="${order.shippingStartDate}"></span>
+                        <span th:text="' '"></span>
+                        <span th:classappend="${order.orderStatus == '배송 시작'} ? 'rounded-gray-background' : 'rounded-background'" th:text="${order.orderStatus}"></span>
+                    </div>
+                    <div class="order-summary">
+                        <span style="font-weight: bold;" th:text="${order.summaryItemName}"></span>
+                        <span th:text="${order.email}"></span>
+                    </div>
+                </div>
+            </td>
+            <td class="order-section details-section">
+                <div>
+                    <div class="spacing">
+                        <a th:href="@{/admin/orders/detail/{id}(id=${order.id})}" class="rounded-blue-background">주문상세</a>
+                    </div>
+                    <div class="spacing" th:text="${order.totalPrice} + '원'"></div>
+                    <div class="spacing">
+                        <a href="#" th:href="|javascript:deleteOrder(${order.id})|" class="rounded-red-background">주문삭제</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
-<table>
-    <thead>
-    <tr>
-        <th>Status</th>
-        <th>Email</th>
-        <th>shippingStartDate</th>
-        <th>Total Price</th>
-        <th>Item Name</th>
-        <th>Summary Image</th>
-        <th>Actions1</th>
-        <th>Actions2</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="order : ${orders}">
-        <td th:text="${order.orderStatus}"></td>
-        <td th:text="${order.email}"></td>
-        <td th:text="${order.shippingStartDate}"></td>
-        <td th:text="${order.totalPrice}"></td>
-        <td th:text="${order.summaryItemName}"></td>
-        <td>
-        <img th:src="@{${order.summaryImagePath}}" alt="" width="100" height="100">
-        <td>
-        <a th:href="@{/admin/orders/detail/{id}(id=${order.id})}">주문상세</a>
-        </td>
-        <td>
-            <a href="#" th:href="|javascript:deleteOrder(${order.id})|">주문삭제</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
 </body>
 </html>

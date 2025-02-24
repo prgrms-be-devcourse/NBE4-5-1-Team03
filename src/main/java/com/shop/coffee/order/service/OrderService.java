@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.shop.coffee.global.exception.ErrorCode.NOSINGLEORDER;
 import static com.shop.coffee.global.exception.ErrorCode.*;
 
 @Service

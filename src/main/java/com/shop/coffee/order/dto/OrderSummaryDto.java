@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 public class OrderSummaryDto {
     private final Long id;
-    private final OrderStatus orderStatus;
+    private final String orderStatus;
     private final String email;
     private final int totalPrice;
     private final String summaryItemName;
@@ -19,12 +19,12 @@ public class OrderSummaryDto {
 
     public OrderSummaryDto(Order order) {
         this.id = order.getId();
-        this.orderStatus = order.getOrderStatus();
+        this.orderStatus = ConvertOrderStatus(order.getOrderStatus());
         this.email = order.getEmail();
         this.totalPrice = order.getTotalPrice();
         this.summaryItemName = getSummaryItemName(order);
         this.summaryImagePath = getSummaryImagePath(order);
-        this.shippingStartDate = calculateShippingStartDate(order.getModifiedAt());
+        this.shippingStartDate = calculateShippingStartDate(order.getCreatedAt());
     }
 
     private String getSummaryItemName(Order order) {
@@ -42,17 +42,21 @@ public class OrderSummaryDto {
         return null;
     }
 
-    private String calculateShippingStartDate(LocalDateTime modifiedAt) {
-        if(modifiedAt == null) {
+    private String calculateShippingStartDate(LocalDateTime createdAt) {
+        if(createdAt == null) {
             return null;
         }
 
-        LocalDateTime cutoffTime = modifiedAt.toLocalDate().atTime(14, 0);
+        LocalDateTime cutoffTime = createdAt.toLocalDate().atTime(14, 0);
 
-        LocalDateTime shippingDate = modifiedAt.isAfter(cutoffTime)
-                ? modifiedAt.plusDays(1)
-                : modifiedAt;
+        LocalDateTime shippingDate = createdAt.isAfter(cutoffTime)
+                ? createdAt.plusDays(1)
+                : createdAt;
 
         return shippingDate.format(DateTimeFormatter.ofPattern("MM. dd(E)"));
+    }
+
+    private String ConvertOrderStatus(OrderStatus orderStatus) {
+        return orderStatus == OrderStatus.SHIPPING ? "배송 시작" : "주문 접수";
     }
 }

@@ -75,13 +75,13 @@ class OrderServiceTest2 {
 
         // when
         // getOrders의 인자로 OrderStatus.RECEIVED가 왔으므로 상태가 RECEIVED인 주문 조회
-        List<com.shop.coffee.order.dto.OrderSummaryDto> orders = orderService.getOrders(OrderStatus.RECEIVED);
+        List<OrderSummaryDto> orders = orderService.getOrders(OrderStatus.RECEIVED);
 
         // then
         // 1개의 주문이 조회되어야 함
         assertNotNull(orders);
         assertEquals(1, orders.size());
-        assertEquals(OrderStatus.RECEIVED, orders.get(0).getOrderStatus());
+        assertEquals("주문 접수", orders.get(0).getOrderStatus());
     }
 
     @Test
