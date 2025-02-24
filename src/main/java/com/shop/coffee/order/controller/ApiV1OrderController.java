@@ -142,11 +142,6 @@ public class ApiV1OrderController {
         return "order_list";
     }
 
-    // 상품 목록 조회 뷰
-    @GetMapping("/item-list")
-    public String showItemList() {
-        return "item_list";
-    }
 
     @GetMapping("/detail/{id}")
     public String showOrderDetail(@PathVariable long id, Model model) {
