@@ -1,26 +1,330 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
-    <title>상품 목록</title>
+    <meta charset="UTF-8">
+    <title>Grids & Circle - 메인페이지</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+
+        body {
+            background-color: #f3f3f3;
+        }
+
+
+        .header-container {
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+        .header-title {
+            text-align: center;
+        }
+        /* 우측 상단 주문확인 버튼 */
+        .header-right-button {
+            position: absolute;
+            right: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            padding: 0.5rem;
+        }
+        .header-right-button svg {
+            width: 60px;
+            height: 60px;
+        }
+        .header-right-button span {
+            margin-left: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* ===== 메인 레이아웃 ===== */
+        .product-list-box {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* ===== 상품 카드 ===== */
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #DDD;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        /* 4개 열: 이미지 / 이름+카테고리 / 가격 / 수량조절 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: 1rem;
+            align-items: center;
+        }
+        .product-image img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .product-text h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .product-text p {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+
+        .product-price {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #333;
+            text-align: left;
+            margin-left: 1rem;
+        }
+
+        /* ===== 수량 조절 ===== */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+        .quantity-controls button {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #DDDDDD;
+            border-radius: 5px;
+            margin: 0 2px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .quantity-controls button:disabled {
+            background-color: #f0f0f0;
+            color: #aaa;
+            cursor: not-allowed;
+        }
+        .quantity-controls input {
+            width: 30px;
+            text-align: center;
+            margin: 0 4px;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        /* ===== Summary 카드 ===== */
+        .summary-card {
+            background-color: #F7F7F7;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid #DDD;
+            height: fit-content;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #C4C4C4;
+            border-radius: 5px;
+            margin-bottom: 0.75rem;
+        }
+        .pay-button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #2C2C2C;
+            color: white;
+            border-radius: 5px;
+        }
+        .notice {
+            font-size: 0.9rem;
+            color: #2C2C2C;
+            margin-top: 1rem;
+        }
+    </style>
 </head>
 <body>
-<h1>상품 목록</h1>
+<div class="container mx-auto px-8 py-10">
+    <!-- 헤더 -->
+    <div class="header-container">
+        <h1 class="text-4xl font-bold header-title">Grids & Circle</h1>
+        <!-- 우측 상단 주문확인 버튼 -->
+        <button class="header-right-button" onclick="location.href='/orders/email-input'">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
 
-<ul>
-    <li th:each="item : ${items}">
-        <div>
-            <img th:src="@{${item.imagePath}}" alt="상품 이미지" width="60">
+                <circle cx="32" cy="20" r="8"/>
+
+                <path d="M16 46c0-8.84 7.16-16 16-16s16 7.16 16 16"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- 메인 영역: 상품 목록(왼쪽), Summary(오른쪽) -->
+    <div class="grid grid-cols-3 gap-8">
+        <!-- 상품 목록 박스 -->
+        <div class="col-span-2 product-list-box">
+            <h2 class="text-2xl font-semibold mb-6">상품 목록</h2>
+            <ul>
+                <!-- 상품 카드 반복 -->
+                <li th:each="item : ${items}" class="product-card">
+                    <div class="card-grid">
+                        <!-- 이미지 -->
+                        <div class="product-image">
+                            <a th:href="@{'/items/' + ${item.id}}">
+                                <img th:src="@{/images/{image}(image=${item.imagePath})}" alt="상품 이미지">
+                            </a>
+                        </div>
+                        <!-- 이름 / 카테고리 -->
+                        <div class="product-text">
+                            <a th:href="@{'/items/' + ${item.id}}">
+                                <h3 th:text="${item.name}"></h3>
+                            </a>
+                        </div>
+                        <!-- 가격 (왼쪽 정렬) -->
+                        <div class="product-price" th:text="${item.price + '원'}"></div>
+                        <!-- 수량 조절 -->
+                        <div class="quantity-controls"
+                             th:attr="data-item-name=${item.name}, data-item-price=${item.price}">
+                            <button class="minus" onclick="decrement(this)">-</button>
+                            <input type="text" value="0" oninput="handleInputChange(this)">
+                            <button class="plus" onclick="increment(this)">+</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
-        <div>
-            <span th:text="${item.category}">카테고리</span> |
-            <a th:href="@{'/items/' + ${item.id}}">
-                <span th:text="${item.name}">상품명</span>
-            </a> |
-            <span th:text="${item.price} + '원'">가격</span> |
-            <a th:href="@{'/orders/add?itemId=' + ${item.id}}">추가</a>
+
+        <!-- Summary 카드 -->
+        <div class="summary-card">
+            <h2 class="text-xl font-bold mb-4">Summary</h2>
+            <div id="summaryContent" class="max-h-32 overflow-y-auto mb-4"></div>
+            <p class="text-right text-lg font-semibold">
+                총 금액: <span id="totalPrice">0</span>원
+            </p>
+            <form id="orderForm" class="mt-6">
+                <input type="email" name="email" placeholder="이메일" required class="form-input">
+                <input type="text" name="address" placeholder="주소" required class="form-input">
+                <input type="text" name="zipcode" placeholder="우편번호" required class="form-input">
+                <input type="hidden" name="orderItems" id="orderItems">
+                <p class="notice">당일 오후 2시 이후의 주문은 다음날 배송을 시작합니다.</p>
+                <button type="submit" class="pay-button mt-4">결제하기</button>
+            </form>
         </div>
-    </li>
-</ul>
+    </div>
+</div>
+
+<script>
+    // 수량 변화 시 전체 Summary 갱신
+    function updateSummary() {
+        const summaryContent = document.getElementById('summaryContent');
+        const orderItemsInput = document.getElementById('orderItems');
+        let totalPrice = 0;
+        const orderItems = [];
+
+        summaryContent.innerHTML = '';
+
+        // 모든 상품의 quantity-controls를 순회하며 수량 계산
+        document.querySelectorAll('.quantity-controls').forEach(control => {
+            const input = control.querySelector('input');
+            const minusButton = control.querySelector('.minus');
+            let quantity = parseInt(input.value);
+
+            // 잘못된 값(음수, NaN) 방지
+            if (isNaN(quantity) || quantity < 0) {
+                quantity = 0;
+                input.value = 0;
+            }
+
+            // 수량이 0이면 - 버튼 비활성화
+            minusButton.disabled = (quantity <= 0);
+
+            // 수량이 0보다 크면 orderItems 및 총합계에 반영
+            if (quantity > 0) {
+                const itemName = control.getAttribute('data-item-name');
+                const itemPrice = parseInt(control.getAttribute('data-item-price'));
+                totalPrice += itemPrice * quantity;
+
+                orderItems.push({ itemName, quantity });
+
+                // Summary 영역에 아이템 표시
+                const itemSummary = document.createElement('div');
+                itemSummary.classList.add('summary-item');
+                itemSummary.innerHTML = `<span>${itemName}</span><span>${quantity}개</span>`;
+                summaryContent.appendChild(itemSummary);
+            }
+        });
+
+        // 총 금액 반영
+        document.getElementById('totalPrice').textContent = totalPrice.toLocaleString();
+
+        // hidden input에 주문 아이템 정보 저장 (JSON)
+        orderItemsInput.value = JSON.stringify(orderItems);
+    }
+
+    // + 버튼 클릭 시
+    function increment(button) {
+        const input = button.parentNode.querySelector('input');
+        let value = parseInt(input.value);
+        if (isNaN(value)) value = 0;
+        value++;
+        input.value = value;
+        updateSummary();
+    }
+
+    // - 버튼 클릭 시
+    function decrement(button) {
+        const input = button.parentNode.querySelector('input');
+        let value = parseInt(input.value);
+        if (isNaN(value)) value = 0;
+        value = Math.max(0, value - 1);
+        input.value = value;
+        updateSummary();
+    }
+
+    // 사용자가 수량 입력란에 직접 입력 시
+    function handleInputChange(input) {
+        updateSummary();
+    }
+
+    // 폼 제출 시 결제 처리
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const email = document.querySelector('input[name="email"]').value;
+        const address = document.querySelector('input[name="address"]').value;
+        const zipcode = document.querySelector('input[name="zipcode"]').value;
+        const items = JSON.parse(document.getElementById('orderItems').value);
+
+        fetch('/orders/processPayment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, address, zipCode: zipcode, items })
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('결제가 완료되었습니다.');
+                    window.location.href = `/orders/order-list?email=${email}`;
+                } else {
+                    alert('결제 실패. 다시 시도해주세요.');
+                }
+            })
+            .catch(error => console.error('에러 발생:', error));
+    });
+</script>
 </body>
 </html>
