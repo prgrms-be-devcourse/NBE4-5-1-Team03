@@ -69,7 +69,7 @@ public class OrderService {
             orders = orderRepository.findByOrderStatusOrderByModifiedAtDesc(orderStatus); // 주문 상태에 따른 조회
         }
         if (orders.isEmpty()) {
-            throw new EntityNotFoundException(NOSINGLEORDER.getMessage());
+            return new ArrayList<>();
         }
         return orders.stream().map(com.shop.coffee.order.dto.OrderSummaryDto::new).collect(Collectors.toList());
     }
