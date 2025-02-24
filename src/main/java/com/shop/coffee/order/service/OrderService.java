@@ -79,15 +79,6 @@ public class OrderService {
 //        return new AdminOrderDetailDto(order);
 //    }
 
-    @Transactional(readOnly = true)
-    public List<OrderDto> getAllOrders() {
-        List<Order> orders = orderRepository.findAllByOrderByCreatedAtDesc(); // createdAt 내림차순 정렬
-        return orders.stream()
-                .map(OrderDto::new) // Order -> OrderDto 변환
-                .collect(Collectors.toList());
-    }
-
-
     @Transactional
     public Order create(String email, String address, String zipCode, List<OrderItem> orderItems) {
         Order order = new Order(email, address, zipCode, orderItems);
