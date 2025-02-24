@@ -127,10 +127,10 @@
                         <span th:text="${order.shippingStartDate}"></span>
                         <span th:text="' '"></span>
                         <span th:classappend="${order.orderStatus == '배송 시작'} ? 'rounded-gray-background' : 'rounded-background'" th:text="${order.orderStatus}"></span>
+                        <span th:text="${order.email}"></span>
                     </div>
                     <div class="order-summary">
                         <span style="font-weight: bold;" th:text="${order.summaryItemName}"></span>
-                        <span th:text="${order.email}"></span>
                     </div>
                 </div>
             </td>
