@@ -7,6 +7,7 @@ import com.shop.coffee.order.service.OrderService;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -73,6 +74,26 @@ public class ApiV1OrderController {
         }
 
         return result.getViewName();
+    }
+
+    /**
+     * 주문 통합
+     * @param requestData 주문 통합 요청 데이터
+     * @return 통합 완료 후 리다이렉트할 경로
+     */
+    @PostMapping("/integrate")
+    @ResponseBody
+    public ResponseEntity<String> integrateOrders(
+            @RequestBody OrderIntegrationRequestDto requestData
+    ) {
+        OrderIntegrationDto oldOrderDto = requestData.getOldOrder();
+        OrderIntegrationDto newOrderDto = requestData.getNewOrder();
+        String selectedLocation = requestData.getSelectedLocation();
+
+        orderService.integrateOrders(oldOrderDto.getId(), newOrderDto, selectedLocation);
+
+        String redirectUrl = "/orders/order-list?email=" + oldOrderDto.getEmail();
+        return ResponseEntity.ok(redirectUrl);
     }
 
     // 임시 뷰입니다.
