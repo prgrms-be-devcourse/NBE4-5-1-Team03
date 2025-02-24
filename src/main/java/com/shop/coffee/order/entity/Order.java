@@ -60,4 +60,13 @@ public class Order extends BaseEntity {
         orderItem.setOrder(this); // 연관관계 설정
     }
 
+    public void updateLocation(String address, String zipcode) {
+        this.address = address;
+        this.zipcode = zipcode;
+    }
+
+    public void addTotalPrice(int totalPrice) {
+        this.totalPrice += totalPrice;
+    }
+
 }
