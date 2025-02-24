@@ -1,10 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" class="w-screen h-screen"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
     <meta charset="UTF-8">
-    <title>Same Location Order Integration Page</title>
+    <title>주문 통합 페이지</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
+<body class="w-screen h-screen flex justify-center bg-white">
+
+<!-- 뒤로 가기 버튼 시작 -->
+<button th:onclick="|location.href='@{/items}'|" class="fixed top-0 left-0 m-1 p-1 rounded">
+    <svg class="w-6 h-6 text-customBlack" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
+    </svg>
+</button>
+<!-- 뒤로 가기 버튼 끝 -->
+
+<div class="w-3/4 h-full flex flex-col items-center">
+
+    <!-- 주문 통합 안내글 시작 -->
+    <div class="w-full flex flex-col justify-center items-center my-4 space-y-3">
+        <h1 class="text-3xl text-customBlack card-title">이 이메일로 접수된 주문이 있습니다.</h1>
+        <h2 class="text-2xl text-gray-300 card-title">주문을 통합합니다.</h2>
+    </div>
+    <!-- 주문 통합 안내글 끝 -->
+
+    <div class="w-full h-[60vh] my-4">
+        <div class="w-full h-full flex justify-center items-center overflow-auto">
+
+            <!-- 기존 주문 내역 시작 -->
+            <div class="w-96 h-full max-w-md card bg-customWhite">
+                <div class="card-body w-full text-customBlack">
+                    <div class="flex justify-center">
+                        <h2 class="text-2xl card-title">기존 주문 내역</h2>
+                    </div>
+
+                    <!-- 기존 주문 상품 출력 시작 -->
+                    <div class="max-h-[50%] overflow-y-auto">
+                        <div th:each="orderItem : ${oldOrder.orderItems}" class="flex justify-between text-xl mb-2">
+                            <span th:text="${orderItem.item.name}"></span>
+                            <span th:text="|${orderItem.quantity}개|"></span>
+                        </div>
+                    </div>
+                    <!-- 기존 주문 상품 출력 끝 -->
+
+                    <div class="text-xl">
+                        <span th:text="|${oldOrder.address} ${oldOrder.zipcode}|"></span>
+                    </div>
+
+                </div>
+            </div>
+            <!-- 기존 주문 내역 끝 -->
+
+            <div class="w-10 divider divider-horizontal text-customBlack">
+                <button>
+                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 신규 주문 내역 시작 -->
+            <div class="w-96 h-full max-w-md card bg-customBlue">
+                <div class="card-body w-full text-white">
+                    <div class="flex justify-center">
+                        <h2 class="text-2xl card-title">신규 주문 내역</h2>
+                    </div>
+
+                    <!-- 신규 주문 상품 출력 시작 -->
+                    <div class="max-h-[50%] overflow-y-auto">
+                        <div th:each="orderItem : ${newOrder.orderItems}" class="flex justify-between text-xl mb-2">
+                            <span th:text="${orderItem.item.name}"></span>
+                            <span th:text="|${orderItem.quantity}개|"></span>
+                        </div>
+                    </div>
+                    <!-- 신규 주문 상품 출력 끝 -->
+
+                    <div class="text-xl">
+                        <span th:text="|${newOrder.address} ${newOrder.zipcode}|"></span>
+                    </div>
+
+                </div>
+            </div>
+            <!-- 신규 주문 내역 끝 -->
+
+        </div>
+    </div>
+    <div class="w-full flex justify-center items-center my-4">
+
+        <!-- 취소하기 버튼 시작 -->
+        <button th:onclick="|location.href='@{/items}'|" class="btn bg-customBlack text-white text-lg border-none w-96">
+            <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+            </svg>취소하기
+        </button>
+        <!-- 취소하기 버튼 끝 -->
+
+        <div class="w-10 divider divider-horizontal invisible"></div>
+
+        <!-- 통합하기 버튼 시작 -->
+        <button id="integrationButton" class="btn bg-customBlue text-white text-lg border-none w-96">
+            <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z" clip-rule="evenodd"/>
+            </svg>통합하기
+        </button>
+        <!-- 통합하기 버튼 끝 -->
+    </div>
+</div>
+
+<!-- 주문 통합 요청 스크립트 시작 -->
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('#integrationButton').click(function() {
+            const requestData = {
+                oldOrder: [[${oldOrder}]],
+                newOrder: [[${newOrder}]],
+            }
+
+            fetch('/orders/integrate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+                .then(response => response.text())
+                .then(redirectUrl => {
+                    window.location.replace(redirectUrl);
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+<!-- 주문 통합 요청 스크립트 끝 -->
 
 </body>
 </html>
