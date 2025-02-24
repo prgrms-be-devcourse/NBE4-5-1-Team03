@@ -2,12 +2,14 @@ package com.shop.coffee.order.service;
 
 import com.shop.coffee.item.dto.ItemToOrderItemDto;
 import com.shop.coffee.item.entity.Item;
+import com.shop.coffee.item.repository.ItemRepository;
 import com.shop.coffee.item.service.ItemService;
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.dto.*;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.orderitem.dto.OrderItemEditDetailDto;
+import com.shop.coffee.orderitem.dto.OrderItemIntegrationDto;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import com.shop.coffee.orderitem.service.OrderItemService;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,6 +33,7 @@ public class OrderService {
     //주문 번호로 주문 단건 조회
     private final OrderItemService orderItemService;
     private final ItemService itemService;
+    private final ItemRepository itemRepository;
 
     // 주문 ID로 주문 조회
     @Transactional(readOnly = true)
@@ -267,5 +270,107 @@ public class OrderService {
         return new OrderEditDetailDto(order, allItems);
     }
 
+    /**
+     * 주문 통합
+     * @param oldOrderId 기존 주문의 아이디
+     * @param newOrderDto 신규 주문
+     * @param selectedLocation 선택된 배송지
+     */
+    @Transactional
+    public void integrateOrders(
+            Long oldOrderId,
+            OrderIntegrationDto newOrderDto,
+            String selectedLocation) {
+
+        // 변경 감지를 위해 기존 주문 조회
+        Order oldOrder = orderRepository.findById(oldOrderId)
+                .orElseThrow(() -> new EntityNotFoundException(ORDER_NOT_FOUND.getMessage()));
+
+        // 기존 주문 정보로부터 맵 생성
+        Map<Long, OrderItem> oldOrderItemMap = mapOrderItems(oldOrder);
+
+        // 신규 주문 통합 처리
+        processNewOrderItems(oldOrder, newOrderDto, oldOrderItemMap);
+
+        // 기존 주문에 변경된 배송지 반영
+        if (!selectedLocation.equals("oldOrderLocation")) {
+            updateOrderLocation(oldOrder, newOrderDto);
+        }
+
+        // 총 결제 금액 합산
+        updateTotalPrice(oldOrder, newOrderDto);
+    }
+
+    /**
+     * key가 itemId, value가 OrderItem인 맵 생성
+     * @param order 주문
+     * @return 주문 관련 정보를 저장하는 맵
+     */
+    private Map<Long, OrderItem> mapOrderItems(Order order) {
+        Map<Long, OrderItem> orderItemMap = new HashMap<>();
+
+        for (OrderItem orderItem : order.getOrderItems()) {
+            orderItemMap.put(orderItem.getItem().getId(), orderItem);
+        }
+
+        return orderItemMap;
+    }
+
+    /**
+     * 신규 주문 통합 처리
+     * @param oldOrder 기존 주문
+     * @param newOrderDto 신규 주문
+     * @param oldOrderItemMap 기존 주문 관련 맵
+     */
+    private void processNewOrderItems(
+            Order oldOrder,
+            OrderIntegrationDto newOrderDto,
+            Map<Long, OrderItem> oldOrderItemMap) {
+
+        // 신규 주문의 주문 상품 목록 순회
+        for (OrderItemIntegrationDto newOrderItemDto : newOrderDto.getOrderItems()) {
+            Long newItemId = newOrderItemDto.getItem().getId();
+
+            if (oldOrderItemMap.containsKey(newItemId)) { // 기존 주문에 포함된 주문 상품인 경우
+                OrderItem oldOrderItem = oldOrderItemMap.get(newItemId);
+                oldOrderItem.addQuantity(newOrderItemDto.getQuantity()); // 수량 추가
+            } else { // 기존 주문에 포함되지 않은 주문 상품인 경우
+                addOrderItemToOrder(oldOrder, newOrderItemDto); // 새로운 주문 상품 추가
+            }
+        }
+    }
+
+    /**
+     * 기존 주문에 신규 주문 상품 추가
+     * @param oldOrder 기존 주문
+     * @param newOrderItemDto 신규 주문
+     */
+    private void addOrderItemToOrder(Order oldOrder, OrderItemIntegrationDto newOrderItemDto) {
+        Item item = itemRepository.findById(newOrderItemDto.getItem().getId())
+                .orElseThrow(() -> new EntityNotFoundException(ITEM_NOT_FOUND.getMessage()));
+
+        OrderItem newOrderItem = new OrderItem(oldOrder, item, newOrderItemDto.getPrice(),
+                newOrderItemDto.getQuantity(), newOrderItemDto.getImagePath());
+
+        oldOrder.addOrderItem(newOrderItem);
+    }
+
+    /**
+     * 배송지 변경
+     * @param oldOrder 기존 주문
+     * @param newOrderDto 신규 주문
+     */
+    private void updateOrderLocation(Order oldOrder, OrderIntegrationDto newOrderDto) {
+        oldOrder.updateLocation(newOrderDto.getAddress(), newOrderDto.getZipcode());
+    }
+
+    /**
+     * 결제 금액 합산
+     * @param oldOrder 기존 주문
+     * @param newOrderDto 신규 주문
+     */
+    private void updateTotalPrice(Order oldOrder, OrderIntegrationDto newOrderDto) {
+        oldOrder.addTotalPrice(newOrderDto.getTotalPrice());
+    }
 
 }
