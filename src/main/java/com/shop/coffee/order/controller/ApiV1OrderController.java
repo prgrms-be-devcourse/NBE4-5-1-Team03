@@ -95,10 +95,11 @@ public class ApiV1OrderController {
     }
 
     @PutMapping("/{orderId}")
-    public String updateOrder(@PathVariable Long orderId, @ModelAttribute OrderDetailDto orderDetailDto, RedirectAttributes redirectAttributes) {
-        orderService.updateOrder(orderId, orderDetailDto);
-        redirectAttributes.addAttribute("email", orderDetailDto.getEmail());
-        return "redirect:/orders";
+    @ResponseBody
+    public String updateOrder(@PathVariable Long orderId, @ModelAttribute OrderEditDetailDto orderEditDetailDto, RedirectAttributes redirectAttributes) {
+        orderService.updateOrder(orderId, orderEditDetailDto);
+        // PUT으로 인해. ResponseBody로 수정하였습니다. -> order_detail_modification.js 참조
+        return "redirect:/orders/detail/" + orderEditDetailDto.getId(); 
     }
 
     //입력한 이메일에 따라 마이페이지 또는 메인페이지으로 이동
@@ -144,8 +145,8 @@ public class ApiV1OrderController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable long id, Model model) {
-        OrderDetailDto orderDetailDto = this.orderService.getOrderDetailDtoById(id);
-        model.addAttribute("orderDetail", orderDetailDto);
+        OrderEditDetailDto orderEditDetailDto = this.orderService.getOrderEditDetailDtoById(id);
+        model.addAttribute("orderEditDetail", orderEditDetailDto);
         return "order_detail_modification";
     }
 }

@@ -1,10 +1,14 @@
 package com.shop.coffee.order.service;
 
+import com.shop.coffee.item.entity.Item;
+import com.shop.coffee.item.service.ItemService;
 import com.shop.coffee.order.dto.OrderDetailDto;
 import com.shop.coffee.order.dto.OrderDto;
+import com.shop.coffee.order.dto.OrderEditDetailDto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import com.shop.coffee.orderitem.repository.OrderItemRepository;
+import com.shop.coffee.orderitem.service.OrderItemService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,9 @@ public class OrderServiceTest5 {
 
     @Autowired
     private OrderItemRepository orderItemRepository;
+
+    @Autowired
+    private ItemService itemService;
 
     @Test
     @DisplayName("주문 생성시 정상작동 테스트")
@@ -67,9 +74,10 @@ public class OrderServiceTest5 {
 
         OrderItem orderItem1 = orderItemRepository.findById(1L).get();
         OrderItem orderItem2 = orderItemRepository.findById(2L).get();
+        List<Item> allItems = itemService.getAllItemEntities();
         Order order = orderService.create("test@test.com","부산광역시 A123", "90123", List.of(orderItem1, orderItem2)); // 여기서 필요한 필드를 세팅해야 함
 
-        OrderDetailDto orderRequestDto = new OrderDetailDto(order);
+        OrderEditDetailDto orderRequestDto = new OrderEditDetailDto(order, allItems);
         OrderDetailDto updateRequestDto = orderService.updateOrder(orderId, orderRequestDto);
 
         assertThat(updateRequestDto.getAddress()).isEqualTo("부산광역시 A123");

@@ -5,6 +5,8 @@ import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.orderitem.dto.OrderDetailItemDto;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class OrderDetailDto {
     private Long id;
     private String email;

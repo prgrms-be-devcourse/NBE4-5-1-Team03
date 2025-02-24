@@ -2,9 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Order Detail Modification Page</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+    <title>주문 수정화면</title>
+    <style type="text/css">
+        /* input number시 화살표가 나오는 현상 제거*/
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox  */
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
+    </style>
 </head>
 <body>
+<div class="container mx-auto px-4 py-4">
+    <div class="flex items-center mb-4">
+        <!-- 뒤로가기 버튼 -->
+        <button th:data-id="${orderEditDetail.getId()}"
+                onclick="handleBackNavigation(this.getAttribute('data-id'))"
+                class="w-12 h-12 flex items-center justify-center"
+                id="backButton">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M5 12L12 19M5 12L12 5" />
+            </svg>
+        </button>
 
+        <!-- 제목 -->
+        <h1 class="text-2xl font-bold flex-1 text-center pr-8">Grids & Circle</h1>
+    </div>
+
+    <div class="card bg-base-100 border border-black shadow-lg max-w-4xl mx-auto">
+        <form id="orderEditForm" th:action="@{|/orders/${orderEditDetail.getId()}|}" th:data-order-id="${orderEditDetail.getId()}" method="post" class="card-body p-6">
+            <input type="hidden" name="id" th:value="${orderEditDetail.getId()}" />
+            <input type="hidden" name="email" th:value="${orderEditDetail.getEmail()}" />
+
+            <div class="flex gap-2">
+                <div class="flex-shrink-0" style="height: 3rem">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+                        <path d="M19 6.5l-7-4-7 4v11l7 4 7-4v-11z" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M5 6.5l7 4 7-4" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 10.5v11" fill="none" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <!-- 주소 정보 -->
+                <div class="flex-1">
+                    <div class="flex mb-2">
+                        <label for="address" class="w-24 text-base flex justify-end pr-2">주소 :</label>
+                        <input type="text"
+                               id="address"
+                               name="address"
+                               th:value="${orderEditDetail.getAddress()}"
+                               class="border rounded px-2 py-1 flex-1 text-base"/>
+                    </div>
+                    <div class="flex items-center">
+                        <label for="zipcode" class="w-24 text-base flex justify-end pr-2">우편번호 :</label>
+                        <input type="text" id="zipcode" name="zipcode"
+                               th:value="${orderEditDetail.getZipcode()}"
+                               class="border rounded px-2 py-1 w-32 text-base"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 구분선 -->
+            <div class="border-t my-3"></div>
+
+            <!-- 상품 목록 -->
+            <div class="space-y-4 mb-6">
+                <div th:each="orderItem, iterStat : ${orderEditDetail.getOrderItemEditDetailDtos()}" class="order-item flex justify-between items-center text-base">
+                    <!-- 숨겨진 필드: itemId, wasInOriginalOrder -->
+                    <input type="hidden" th:attr="name='orderItemEditDetailDtos[' + ${iterStat.index} + '].itemId'"  th:value="${orderItem.getItemId()}"/>
+                    <input type="hidden" th:attr="name='orderItemEditDetailDtos[' + ${iterStat.index} + '].imagePath'" th:value="${orderItem.getImagePath()}"/>
+                    <input type="hidden" th:attr="name='orderItemEditDetailDtos[' + ${iterStat.index} + '].price'" th:value="${orderItem.getPrice()}"/>
+
+                    <div>
+                        <span th:text="${orderItem.getItemName()}"></span>
+                        <div class="inline-flex items-center ml-3 quantity-container" th:data-unit-price="${orderItem.getPrice()}">
+                            <button type="button" class="minus-button px-2 py-0.5 border rounded-l opacity-100 disabled:bg-gray-400 disabled:text-gray-500">-</button>
+                            <input type="number"
+                                   class="quantity-input w-12 h-6 px-3 py-0.5 border-t border-b text-center"
+                                   th:attr="name='orderItemEditDetailDtos[' + ${iterStat.index} + '].quantity'"
+                                   th:value="${orderItem.getQuantity()}"
+                                   min="0"/>
+                            <button type="button" class="plus-button px-2 py-0.5 border rounded-r">+</button>
+                        </div>
+                    </div>
+
+                    <input type="hidden"
+                           th:attr="name='orderItemEditDetailDtos[' + ${iterStat.index} + '].totalPrice'"
+                           th:value="${orderItem.getTotalPrice()}" />
+                    <div th:attr="name='orderItemEditDetailDtos[' + ${iterStat.index} + '].totalPrice'" class="total-price" th:text="|${#numbers.formatInteger(orderItem.getTotalPrice(), 1, 'COMMA')}원|"></div>
+                </div>
+            </div>
+
+            <!-- 구분선 -->
+            <div class="border-t my-3"></div>
+
+            <!-- 총 결제 금액 -->
+            <div class="flex justify-between text-lg">
+                <span>총 결제 금액</span>
+                <input type="hidden"
+                       id="hiddenTotalPrice"
+                       name="totalPrice"
+                       th:value="${orderEditDetail.getTotalPrice()}" />
+                <span id="totalPrice" class="font-bold" th:text="|${#numbers.formatInteger(orderEditDetail.getTotalPrice(), 1, 'COMMA')}원|"></span>
+            </div>
+        </form>
+    </div>
+
+    <!-- 수정완료 버튼을 카드 외부, 아래쪽에 배치 -->
+    <div class="text-right mt-4 max-w-4xl mx-auto">
+        <button class="bg-blue-500 text-white px-4 py-1.5 rounded text-sm" id="submitOrderEdit">수정완료</button>
+    </div>
+</div>
+<script th:src="@{/js/order_detail_modification.js}"></script>
 </body>
 </html>

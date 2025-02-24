@@ -2,12 +2,12 @@ package com.shop.coffee.order.service;
 
 import com.shop.coffee.item.dto.ItemToOrderItemDto;
 import com.shop.coffee.item.entity.Item;
-import com.shop.coffee.item.repository.ItemRepository;
+import com.shop.coffee.item.service.ItemService;
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.dto.*;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
-import com.shop.coffee.orderitem.dto.OrderDetailItemDto;
+import com.shop.coffee.orderitem.dto.OrderItemEditDetailDto;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import com.shop.coffee.orderitem.service.OrderItemService;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,15 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.shop.coffee.global.exception.ErrorCode.ITEM_NOT_FOUND;
 import static com.shop.coffee.global.exception.ErrorCode.NOSINGLEORDER;
 import static com.shop.coffee.global.exception.ErrorCode.*;
 
@@ -35,8 +30,7 @@ public class OrderService {
 
     //주문 번호로 주문 단건 조회
     private final OrderItemService orderItemService;
-    private final ItemRepository itemRepository;
-
+    private final ItemService itemService;
 
     // 주문 ID로 주문 조회
     @Transactional(readOnly = true)
@@ -85,7 +79,6 @@ public class OrderService {
 //        return new AdminOrderDetailDto(order);
 //    }
 
-
     @Transactional
     public Order create(String email, String address, String zipCode, List<OrderItem> orderItems) {
         Order order = new Order(email, address, zipCode, orderItems);
@@ -123,40 +116,57 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDetailDto updateOrder(Long orderId, OrderDetailDto orderDetailDto) {
-        Order existingOrder = orderRepository.findByIdOrderWithOrderItems(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(NO_ORDER_NUMBER.getMessage()));
+    public OrderDetailDto updateOrder(Long orderId, OrderEditDetailDto orderEditDetailDto) {
+        Order existingOrder = orderRepository.findByIdFetchOrderItemsAndItems(orderId)
+                .orElseThrow(() -> new EntityNotFoundException(NOSINGLEORDER.getMessage()));
 
-        existingOrder.setAddress(orderDetailDto.getAddress());
-        existingOrder.setZipcode(orderDetailDto.getZipcode());
+        existingOrder.setAddress(orderEditDetailDto.getAddress());
+        existingOrder.setZipcode(orderEditDetailDto.getZipcode());
 
         Map<Long, OrderItem> existingItemMap = existingOrder.getOrderItems().stream()
-                .collect(Collectors.toMap(OrderItem::getId, item -> item));
+                .collect(Collectors.toMap(orderItem -> orderItem.getItem().getId(), item -> item));
 
         List<OrderItem> itemsToRemove = new ArrayList<>();
         List<OrderItem> itemsToAdd = new ArrayList<>();
 
-        for (OrderDetailItemDto dto : orderDetailDto.getOrderItems()) {
-            Item entityItem = itemRepository.findById(dto.getItemId())
-                    .orElseThrow(() -> new EntityNotFoundException(ITEM_NOT_FOUND.getMessage()));
+        for (OrderItemEditDetailDto dto : orderEditDetailDto.getOrderItemEditDetailDtos()) {
+            Item entityItem = itemService.getItemByIdEntity(dto.getItemId());
 
-            if (dto.getId() != null && existingItemMap.containsKey(dto.getId())) {
-                OrderItem existingItem = existingItemMap.get(dto.getId());
-                existingItem.setQuantity(dto.getQuantity());
-                existingItemMap.remove(dto.getId());
+            if (existingItemMap.containsKey(dto.getItemId())) {
+                // 기존 주문에 있는 상품이면 수량 변경
+                OrderItem existingItem = existingItemMap.get(dto.getItemId());
+
+                if (dto.getQuantity() == 0) {
+                    // 수량이 0이면 삭제 예정 리스트에 추가
+                    itemsToRemove.add(existingItem);
+                } else {
+                    // 수량 업데이트
+                    existingItem.setQuantity(dto.getQuantity());
+                }
+
+                existingItemMap.remove(dto.getItemId());
             } else {
-                OrderItem newItem = new OrderItem(existingOrder, entityItem, dto.getPrice(), dto.getQuantity(), dto.getImagePath());
-                itemsToAdd.add(newItem);
+                // 새로운 상품 추가
+                if (dto.getQuantity() > 0) {
+                    OrderItem newItem = new OrderItem(existingOrder, entityItem, dto.getPrice(), dto.getQuantity(), dto.getImagePath());
+                    itemsToAdd.add(newItem);
+                }
             }
         }
 
-        itemsToRemove.addAll(existingItemMap.values());
-
+        // 기존 주문에서 삭제할 상품 제거
         existingOrder.getOrderItems().removeAll(itemsToRemove);
 
+        // 새로운 상품 추가
         existingOrder.getOrderItems().addAll(itemsToAdd);
 
-        return new OrderDetailDto(existingOrder);
+        // 총 주문 금액 다시 계산 (서버에서 직접 계산)
+        int newTotalPrice = existingOrder.getOrderItems().stream()
+                .mapToInt(item -> item.getQuantity() * item.getPrice())
+                .sum();
+        existingOrder.setTotalPrice(newTotalPrice);
+
+        return new OrderDetailDto(existingOrder); // 확인하기 위한 상세보기 DTO(수정 DTO는 List<Item>이 있어야 되기 떄문에 사용하지 않음)
     }
 
     //이메일로 주문 유무 확인
@@ -242,16 +252,19 @@ public class OrderService {
 
     @Transactional
     public OrderDetailDto getOrderDetailDtoById(long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdFetchOrderItemsAndItems(orderId)
                 .orElseThrow(() -> new IllegalArgumentException(NOSINGLEORDER.getMessage()));
-
+        order.getOrderItems().sort(Comparator.comparing(orderItem -> orderItem.getItem().getName())); // 이름순 정렬
         return new OrderDetailDto(order);
     }
 
     @Transactional
-    public Order getOrderByIdWithItems(long orderId) {
-        return orderRepository.findByIdOrderWithOrderItems(orderId)
+    public OrderEditDetailDto getOrderEditDetailDtoById(long orderId) {
+        Order order = orderRepository.findByIdFetchOrderItemsAndItems(orderId)
                 .orElseThrow(() -> new IllegalArgumentException(NOSINGLEORDER.getMessage()));
+        List<Item> allItems = itemService.getAllItemEntities();
+        order.getOrderItems().sort(Comparator.comparing(orderItem -> orderItem.getItem().getName())); // 이름순 정렬
+        return new OrderEditDetailDto(order, allItems);
     }
 
 
