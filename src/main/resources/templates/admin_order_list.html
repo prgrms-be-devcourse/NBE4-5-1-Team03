@@ -137,11 +137,11 @@
             <td class="order-section details-section">
                 <div>
                     <div class="spacing">
-                        <a th:href="@{/admin/orders/detail/{id}(id=${order.id})}" class="rounded-blue-background">주문상세</a>
+                        <a th:href="@{/admin/orders/detail/{id}(id=${order.id})}" class="rounded-blue-background">주문 상세 ►</a>
                     </div>
                     <div class="spacing" th:text="${order.totalPrice} + '원'"></div>
                     <div class="spacing">
-                        <a href="#" th:href="|javascript:deleteOrder(${order.id})|" class="rounded-red-background">주문삭제</a>
+                        <a href="#" th:href="|javascript:deleteOrder(${order.id})|" class="rounded-red-background">주문 취소 ✖</a>
                     </div>
                 </div>
             </td>
