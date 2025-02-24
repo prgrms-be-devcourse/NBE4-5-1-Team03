@@ -108,5 +108,32 @@
         <!-- 통합하기 버튼 끝 -->
     </div>
 </div>
+
+<!-- 주문 통합 요청 스크립트 시작 -->
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('#integrationButton').click(function() {
+            const requestData = {
+                oldOrder: [[${oldOrder}]],
+                newOrder: [[${newOrder}]],
+            }
+
+            fetch('/orders/integrate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+                .then(response => response.text())
+                .then(redirectUrl => {
+                    window.location.replace(redirectUrl);
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+<!-- 주문 통합 요청 스크립트 끝 -->
+
 </body>
 </html>
