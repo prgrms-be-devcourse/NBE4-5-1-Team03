@@ -2,8 +2,10 @@ package com.shop.coffee.item.dto;
 
 import com.shop.coffee.item.entity.Item;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Getter
 @Setter
 public class ItemIntegrationDto {
