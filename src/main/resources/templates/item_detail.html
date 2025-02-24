@@ -2,19 +2,150 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>상품 상세 정보</title>
+  <title th:text="${item.name} + ' - 상세 정보'">상품 상세</title>
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* 뒤로가기 버튼 */
+    .back-button {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      margin: 20px;
+    }
+    .back-button svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .content-wrapper {
+      display: flex;
+      gap: 50px;
+      margin: 0 auto;
+      max-width: 1200px;
+      padding: 50px;
+    }
+
+    .product-image {
+      width: 504px;
+      height: 455px;
+      background: #E3E3E3;
+      background-size: cover;
+      background-position: center;
+      border-radius: 12px;
+    }
+
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .product-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 48px;
+      color: #000000;
+      margin-bottom: 10px;
+    }
+
+    .price-box {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    .price-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 48px;
+      color: #1E1E1E;
+    }
+
+    .description-box {
+      background: #FFFFFF;
+      border: 1px solid #D9D9D9;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .accordion-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: #1E1E1E;
+      margin-bottom: 8px;
+    }
+
+    .accordion-content {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.4;
+      color: #1E1E1E;
+      padding: 8px 0;
+    }
+
+    /*!* 원두 특성 / 바디감 영역 *!*/
+    /*.info-section {*/
+    /*  display: flex;*/
+    /*  justify-content: space-between;*/
+    /*  margin-top: 20px;*/
+    /*}*/
+    /*.info-section > div {*/
+    /*  width: 45%;*/
+    /*}*/
+  </style>
 </head>
 <body>
-<h1>상품 상세 정보</h1>
 
-<div>
-  <img th:src="@{${item.imagePath}}" alt="상품 이미지" width="200">
-  <p><strong>상품명:</strong> <span th:text="${item.name}">상품명</span></p>
-  <p><strong>카테고리:</strong> <span th:text="${item.category}">카테고리</span></p>
-  <p><strong>가격:</strong> <span th:text="${item.price} + '원'">가격</span></p>
-  <p><strong>설명:</strong> <span th:text="${item.description}">설명</span></p>
+<!-- 뒤로가기 버튼 -->
+<button onclick="location.href='/items'" class="back-button hover:bg-gray-200">
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M19 12H5M5 12L12 19M5 12L12 5" />
+  </svg>
+</button>
+
+<div class="content-wrapper">
+  <!-- 상품 이미지 -->
+  <div class="product-image"
+       th:style="'background-image: url(' + @{/images/{image}(image=${item.imagePath})} + ')'">
+  </div>
+
+  <!-- 상품 정보 -->
+  <div class="product-info">
+
+    <h1 class="product-title" th:text="${item.name}"></h1>
+
+
+    <div class="price-box">
+      <span class="price-text" th:text="${item.price + '원'}"></span>
+    </div>
+
+    <!-- 설명 박스 -->
+    <div class="description-box">
+      <div class="accordion-title">제품 설명</div>
+      <div class="accordion-content" th:text="${item.description}">
+      </div>
+
+      <!-- 원두 특성 / 바디감 -->
+<!--      <div class="info-section">-->
+<!--        <div>-->
+<!--          <div class="accordion-title">원두 특성</div>-->
+<!--           (ex. th:text="${item.beanFeature}")-->
+<!--          <div class="accordion-content">꽃향기, 부드러움, 복숭아</div>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--          <div class="accordion-title">바디감</div>-->
+<!--           (ex. th:text="${item.body}")-->
+<!--          <div class="accordion-content">거칠고 산뜻함</div>-->
+<!--        </div>-->
+<!--      </div>-->
+    </div>
+  </div>
 </div>
 
-<a href="/items">상품 목록으로 돌아가기</a>
 </body>
 </html>
