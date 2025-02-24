@@ -3,6 +3,7 @@ package com.shop.coffee.order.service.scheduler;
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,10 @@ public class OrderStatusUpdateScheduler {
     public void updateOrderStatus() {
         log.info("=== 배송 일괄 처리 시작 ===");
 
-        List<Order> receivedOrders = orderRepository.findByOrderStatus(OrderStatus.RECEIVED);
+        LocalDateTime start = LocalDateTime.now().minusDays(1).withHour(14).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime end = LocalDateTime.now();
+
+        List<Order> receivedOrders = orderRepository.findByCreatedAtBetweenAndOrderStatus(start, end, OrderStatus.RECEIVED);
 
         receivedOrders.forEach(
                 order -> {

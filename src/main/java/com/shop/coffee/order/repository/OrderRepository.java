@@ -2,6 +2,7 @@ package com.shop.coffee.order.repository;
 
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.entity.Order;
+import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,4 +37,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByEmail(String email);
     @Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.orderItems oi JOIN FETCH oi.item WHERE o.id = :id")
     Optional<Order> findByIdFetchOrderItemsAndItems(@Param("id") Long orderId);
+
+    // createdAt이 start와 end 사이에 포함되고, OrderStatus가 RECEIVED인 Order 조회
+    List<Order> findByCreatedAtBetweenAndOrderStatus(LocalDateTime start, LocalDateTime end, OrderStatus orderStatus);
 }
