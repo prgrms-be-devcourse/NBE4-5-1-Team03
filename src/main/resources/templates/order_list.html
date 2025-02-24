@@ -1,10 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Order List</title>-->
+<!--    <script>-->
+<!--        function deleteOrder(orderId, email) {-->
+<!--            if (confirm("정말로 주문을 삭제하시겠습니까?")) {-->
+<!--                fetch(`/orders/${orderId}?email=${email}`, {-->
+<!--                    method: 'DELETE'-->
+<!--                }).then(response => {-->
+<!--                    if (response.redirected) {-->
+<!--                        window.location.href = response.url;-->
+<!--                    } else {-->
+<!--                        alert("삭제에 실패했습니다.");-->
+<!--                    }-->
+<!--                }).catch(error => alert("삭제 중 오류 발생"));-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Order List</h1>-->
 
-</body>
-</html>
+<!--&lt;!&ndash; RECEIVED 상태 주문 &ndash;&gt;-->
+<!--<h2>주문 접수</h2>-->
+<!--<div th:if="${receivedOrder}">-->
+<!--    <p><strong>주문 날짜:</strong>-->
+<!--        <span th:text="${#temporals.format(receivedOrder.orderDate, 'M.d (E)')}"></span>-->
+<!--    </p>-->
+
+<!--    <div th:if="${receivedOrder.firstImagePath}">-->
+<!--        <p><strong>대표 이미지:</strong></p>-->
+<!--        <img th:src="${receivedOrder.firstImagePath}" alt="주문 이미지" width="100">-->
+<!--    </div>-->
+
+<!--    <p><strong>총 주문 개수:</strong>-->
+<!--        <span th:text="${receivedOrder.orderCount}"></span>-->
+<!--    </p>-->
+
+<!--    <p><strong>총 가격:</strong>-->
+<!--        <span th:text="${receivedOrder.totalPrice} + ' 원'"></span>-->
+<!--    </p>-->
+
+<!--    <h3>주문 아이템</h3>-->
+<!--    <ul>-->
+<!--        <li>-->
+<!--            <span th:text="${receivedOrder.orderItems[0].itemName}"></span>-->
+<!--            <span th:text="' 외 ' + (${receivedOrder.orderCount - 1}) + ' 건'"></span>-->
+<!--        </li>-->
+<!--    </ul>-->
+<!--    &lt;!&ndash;주문 상세 버튼&ndash;&gt;-->
+<!--    <button th:onclick="|location.href='@{/orders/detail(orderId=${receivedOrder.id})}'|">주문 상세</button>-->
+<!--    &lt;!&ndash;주문 삭제 버튼&ndash;&gt;-->
+<!--    <button class="delete-order-btn"-->
+<!--            th:data-order-id="${receivedOrder.id}"-->
+<!--            th:data-email="${receivedOrder.email}">-->
+<!--        주문 삭제-->
+<!--    </button>-->
+
+<!--    <script>-->
+<!--        document.addEventListener("DOMContentLoaded", function () {-->
+<!--            document.querySelectorAll(".delete-order-btn").forEach(button => {-->
+<!--                button.addEventListener("click", function () {-->
+<!--                    const orderId = this.getAttribute("data-order-id");-->
+<!--                    const email = this.getAttribute("data-email");-->
+
+<!--                    if (confirm("정말로 주문을 삭제하시겠습니까?")) {-->
+<!--                        fetch(`/orders/${orderId}?email=${email}`, {-->
+<!--                            method: 'DELETE'-->
+<!--                        }).then(response => {-->
+<!--                            if (response.redirected) {-->
+<!--                                window.location.href = response.url;-->
+<!--                            } else {-->
+<!--                                alert("삭제에 실패했습니다.");-->
+<!--                            }-->
+<!--                        }).catch(error => alert("삭제 중 오류 발생"));-->
+<!--                    }-->
+<!--                });-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+
+<!--</div>-->
+
+<!--&lt;!&ndash; SHIPPING 상태 주문 (날짜별 그룹화) &ndash;&gt;-->
+<!--<h2>배송 시작</h2>-->
+<!--<div th:each="entry : ${shippingOrdersByDate}">-->
+<!--    <h3 th:text="${#temporals.format(entry.key, 'M.d (E)')}">주문 날짜</h3>-->
+
+<!--    <p><strong>총 주문 개수:</strong>-->
+<!--        <span th:text="${entry.value.orderCount}"></span>-->
+<!--    </p>-->
+
+<!--    <p><strong>총 가격:</strong>-->
+<!--        <span th:text="${entry.value.totalPrice} + ' 원'"></span>-->
+<!--    </p>-->
+
+<!--    <div th:if="${entry.value.firstImagePath}">-->
+<!--        <p><strong>대표 이미지:</strong></p>-->
+<!--        <img th:src="${entry.value.firstImagePath}" alt="주문 이미지" width="100">-->
+<!--    </div>-->
+
+<!--    <h4>주문 아이템</h4>-->
+<!--    <ul>-->
+<!--        <li>-->
+<!--            <span th:text="${entry.value.orderItems[0].itemName}"></span>-->
+<!--            <span th:text="' 외 ' + (${entry.value.orderCount - 1}) + ' 건'"></span>-->
+<!--        </li>-->
+<!--    </ul>-->
+
+<!--    <button th:onclick="|location.href='@{/orders/detail(orderId=${entry.value.id})}'|">주문 상세</button>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
