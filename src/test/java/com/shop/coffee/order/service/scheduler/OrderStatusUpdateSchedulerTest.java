@@ -3,6 +3,7 @@ package com.shop.coffee.order.service.scheduler;
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,10 @@ class OrderStatusUpdateSchedulerTest {
     @DisplayName("RECEIVED 상태인 주문이 있는 경우, SHIPPING 상태로 변경되어야 한다.")
     void 주문_상태_업데이트_성공_테스트_1() {
         // given
-        when(orderRepository.findByOrderStatus(OrderStatus.RECEIVED))
+        LocalDateTime start = any(LocalDateTime.class);
+        LocalDateTime end = any(LocalDateTime.class);
+
+        when(orderRepository.findByCreatedAtBetweenAndOrderStatus(start, end, eq(OrderStatus.RECEIVED)))
                 .thenReturn(List.of(receivedOrder));
 
         // when
@@ -56,7 +60,10 @@ class OrderStatusUpdateSchedulerTest {
     @DisplayName("RECEIVED 상태인 주문이 없는 경우, 아무런 업데이트도 발생하지 않아야 한다.")
     void 주문_상태_업데이트_성공_테스트_2() {
         // given
-        when(orderRepository.findByOrderStatus(OrderStatus.RECEIVED))
+        LocalDateTime start = any(LocalDateTime.class);
+        LocalDateTime end = any(LocalDateTime.class);
+
+        when(orderRepository.findByCreatedAtBetweenAndOrderStatus(start, end, eq(OrderStatus.RECEIVED)))
                 .thenReturn(List.of());
 
         // when
