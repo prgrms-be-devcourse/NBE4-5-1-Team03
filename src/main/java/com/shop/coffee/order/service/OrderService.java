@@ -74,12 +74,6 @@ public class OrderService {
         return orders.stream().map(com.shop.coffee.order.dto.OrderSummaryDto::new).collect(Collectors.toList());
     }
 
-//    @Transactional(readOnly = true)
-//    public AdminOrderDetailDto getOrderByEmail(String email) {
-//        Order order = (Order) orderRepository.findFirstByEmailOrderByCreatedAtDesc(email)
-//                .orElseThrow(() -> new IllegalArgumentException(NO_EMAIL.getMessage()));
-//        return new AdminOrderDetailDto(order);
-//    }
 
     @Transactional
     public Order create(String email, String address, String zipCode, List<OrderItem> orderItems) {

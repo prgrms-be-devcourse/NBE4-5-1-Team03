@@ -29,10 +29,10 @@ public class DataInitializer {
                 return;
 
             // 상품 생성
-            Item item1 = new Item("커피A", "Category1", 100, "Description1", null);
-            Item item2 = new Item("커피B", "Category2", 200, "Description2", null);
-            Item item3 = new Item("커피C", "Category3", 300, "Description3", null);
-            Item item4 = new Item("커피D", "Category4", 400, "Description4", null);
+            Item item1 = new Item("BrazilSerraDoCaparao", "Category1", 100, "Description1", "BrazilSerraDoCaparao.png");
+            Item item2 = new Item("ColumbiaNarino", "Category2", 200, "Description2", "ColumbiaNarino.png");
+            Item item3 = new Item("ColumbiaQuindio", "Category3", 300, "Description3", "ColumbiaQuindio.png");
+            Item item4 = new Item("EthiopiaSidamo", "Category4", 400, "Description4", "EthiopiaSidamo.png");
 
             itemRepository.saveAll(List.of(item1, item2, item3, item4));
 
@@ -55,15 +55,15 @@ public class DataInitializer {
             order4.setOrderItems(List.of(new OrderItem(order4, item4, 400, 2, null), new OrderItem(order4, item1, 100, 1, null)));
             // 주문 아이템 생성 및 주문에 추가 - 동일한 이메일 주문
             //1번 1개 RECEIVED 총 100
-            order5.setOrderItems(List.of(new OrderItem(order5, item1, 100, 1, null)));
+            order5.setOrderItems(List.of(new OrderItem(order5, item1, 100, 1, "BrazilSerraDoCaparao.png")));
             //2번1개 3번 1개 RECEIVED 총 200+300=500
-            order6.setOrderItems(List.of(new OrderItem(order6, item2, 200, 1, null), new OrderItem(order6, item3, 300, 1, null)));
+            order6.setOrderItems(List.of(new OrderItem(order6, item2, 200, 1, "ColumbiaNarino.png"), new OrderItem(order6, item3, 300, 1, "ColumbiaQuindio.png")));
             //1번1개 2번1개 3번 2개 SHIPPING 총 100+200+300*2=900
-            order7.setOrderItems(List.of(new OrderItem(order7, item1, 100, 1, null), new OrderItem(order7, item2, 200, 1, null), new OrderItem(order7, item3, 300, 2, null)));
+            order7.setOrderItems(List.of(new OrderItem(order7, item1, 100, 1, "BrazilSerraDoCaparao.png"), new OrderItem(order7, item2, 200, 1, "ColumbiaNarino.png"), new OrderItem(order7, item3, 300, 2, "ColumbiaQuindio.png")));
             //3번 2개 SHIPPING 총 300*2=600
-            order8.setOrderItems(List.of(new OrderItem(order8, item3, 300, 2, null)));
+            order8.setOrderItems(List.of(new OrderItem(order8, item3, 300, 2, "ColumbiaQuindio.png")));
             //1번 1개 2번 1개 3번 1개 4번 1개 SHIPPING 총 100+200+300+400=1000
-            order9.setOrderItems(List.of(new OrderItem(order9, item1, 100, 1, null), new OrderItem(order9, item2, 200, 1, null), new OrderItem(order9, item3, 300, 1, null), new OrderItem(order9, item4, 400, 1, null)));
+            order9.setOrderItems(List.of(new OrderItem(order9, item1, 100, 1, "BrazilSerraDoCaparao.png"), new OrderItem(order9, item2, 200, 1, "ColumbiaNarino.png"), new OrderItem(order9, item3, 300, 1, "ColumbiaQuindio.png"), new OrderItem(order9, item4, 400, 1, "EthiopiaSidamo.png")));
 
 
             orderRepository.saveAll(List.of(order1, order2, order3, order4,order5,order6,order7,order8,order9));
