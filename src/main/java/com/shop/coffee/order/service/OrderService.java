@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 import static com.shop.coffee.global.exception.ErrorCode.NOSINGLEORDER;
@@ -32,7 +31,8 @@ public class OrderService {
     //주문 번호로 주문 단건 조회
     private final OrderItemService orderItemService;
     private final ItemService itemService;
-  
+
+    // 주문 ID로 주문 조회
     @Transactional(readOnly = true)
     public OrderDto getOrderById(Long id) {
         Order order = orderRepository.findById(id)

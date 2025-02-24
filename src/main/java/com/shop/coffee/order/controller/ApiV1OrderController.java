@@ -1,10 +1,15 @@
 package com.shop.coffee.order.controller;
 
+import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.dto.*;
+import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.service.OrderService;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +30,14 @@ public class ApiV1OrderController {
 
     private final OrderService orderService;
 
-    //주문번호(id)로 주문 조회
     // 주문 번호로 주문 단건 조회
     @GetMapping("/{id}")
     public String getOrderById(@PathVariable Long id, Model model) {
         OrderDto orderDto = orderService.getOrderById(id);
-        model.addAttribute("orders", orderDto);
+        if(orderDto == null) {
+            throw new IllegalArgumentException(NO_ORDER_NUMBER.getMessage()+": " + id);
+        }
+        model.addAttribute("order", orderDto);
         return "order_list";
     }
 
