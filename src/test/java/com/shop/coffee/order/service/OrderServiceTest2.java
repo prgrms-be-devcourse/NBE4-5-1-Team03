@@ -6,7 +6,6 @@ import com.shop.coffee.order.dto.OrderSummaryDto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.repository.OrderRepository;
 import com.shop.coffee.orderitem.entity.OrderItem;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,15 +84,15 @@ class OrderServiceTest2 {
     }
 
     @Test
-    @DisplayName("주문이 없는 경우 EntityNotFoundException 발생")
+    @DisplayName("주문이 없는 경우 빈 리스트 반환")
     void test3() {
         // given
         // 주문이 없는 경우
         when(orderRepository.findAllByOrderByModifiedAtDesc()).thenReturn(Collections.emptyList());
 
         // when & then
-        // getOrders의 인자로 null이 왔으므로 모든 주문 조회 시 EntityNotFoundException 발생 기대
-        assertThrows(EntityNotFoundException.class, () -> orderService.getOrders(null));
+        // getOrders의 인자로 null이 왔으므로 모든 주문 조회 시 빈 리스트
+        assertEquals(0, orderService.getOrders(null).size());
     }
 
     @Test
