@@ -3,11 +3,13 @@ package com.shop.coffee.order.dto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.orderitem.dto.OrderItemIntegrationDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor
 @Getter
 @Setter
 public class OrderIntegrationDto {
