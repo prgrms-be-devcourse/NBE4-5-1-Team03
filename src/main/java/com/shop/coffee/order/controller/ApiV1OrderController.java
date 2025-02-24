@@ -115,12 +115,13 @@ public class ApiV1OrderController {
 
     //입력한 이메일에 따라 마이페이지 또는 메인페이지으로 이동
     @PostMapping("/check-email")
-    public String checkEmail(@RequestParam("email") String email) {
+    public String checkEmail(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
         boolean emailExists = orderService.emailExists(email);
         if (emailExists) {
-            return ("redirect:/orders/order-list?email=" + email);
+            return "redirect:/orders/order-list?email=" + email;
         } else {
-            return ("redirect:/orders/item-list");
+            redirectAttributes.addFlashAttribute("message", "해당하는 주문이 없습니다");
+            return "redirect:/orders/email-input";
         }
     }
 
