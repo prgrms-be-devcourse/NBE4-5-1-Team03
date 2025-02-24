@@ -1,26 +1,16 @@
 package com.shop.coffee.order.controller;
 
-import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.dto.*;
-import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.order.service.OrderService;
-import com.shop.coffee.orderitem.entity.OrderItem;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import static com.shop.coffee.global.exception.ErrorCode.NO_EMAIL;
 import static com.shop.coffee.global.exception.ErrorCode.NO_ORDER_NUMBER;
 
 @Controller

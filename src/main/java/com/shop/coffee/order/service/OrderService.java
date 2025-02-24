@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.shop.coffee.global.exception.ErrorCode.NOSINGLEORDER;
 import static com.shop.coffee.global.exception.ErrorCode.*;
 
 @Service
@@ -67,7 +66,7 @@ public class OrderService {
             orders = orderRepository.findByOrderStatusOrderByModifiedAtDesc(orderStatus); // 주문 상태에 따른 조회
         }
         if (orders.isEmpty()) {
-            return Collections.emptyList(); // 주문이 없을 경우 빈 리스트 반환
+            throw new EntityNotFoundException(NOSINGLEORDER.getMessage());
         }
         return orders.stream().map(com.shop.coffee.order.dto.OrderSummaryDto::new).collect(Collectors.toList());
     }
