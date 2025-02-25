@@ -33,7 +33,7 @@ public class ApiV1OrderController {
     }
 
     @PostMapping("/processPayment")
-    public String processPayment(Model model, @RequestBody @Valid OrderPaymentRequestDto request
+    public String processPayment(Model model, @ModelAttribute OrderPaymentRequestDto request
             , RedirectAttributes redirectAttributes) {
         OrderIntegrationViewDto result = orderService.processPayment(
                 request.getEmail(), request.getAddress(), request.getZipCode(), request.getItems()
