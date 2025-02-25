@@ -42,37 +42,30 @@ class ApiV1OrderControllerTest4 {
     void testGetOrderListByEmail() throws Exception {
         // OrderStatus를 명시적으로 설정하여 NPE 방지
         OrderDto mockReceivedOrder = new OrderDto(
-                1L, "user5@example.com", "Address5", "Zipcode5",
+                1L, "user3@example.com", "Address3", "Zipcode3",
                 OrderStatus.RECEIVED, // OrderStatus 설정
-                600, LocalDate.now(), // 수정된 날짜로 변경 필요
+                1000,
+                LocalDate.now(), // 수정된 날짜로 변경 필요
                 "imagePath",
-                2,
-                Collections.emptyList() // OrderItem은 비어있는 리스트로 설정
+                1,
+                Collections.emptyList(), // OrderItem은 비어있는 리스트로 설정,
+                3
         );
 
         Map<LocalDate, OrderDto> mockShippingOrdersByDate = Collections.singletonMap(LocalDate.now(), mockReceivedOrder);
         OrderListDto mockOrderListDto = new OrderListDto(mockReceivedOrder, mockShippingOrdersByDate);
 
+        // 추가된 Mocking: getOrdersByEmail()이 비어 있지 않도록 설정
+        when(orderService.getOrdersByEmail(anyString())).thenReturn(Collections.singletonList(mockReceivedOrder));
+
         when(orderService.getGroupedOrdersByEmail(anyString())).thenReturn(mockOrderListDto);
 
         mockMvc.perform(get("/orders/order-list")
                         .param("email", "user5@example.com"))
-                .andExpect(status().isOk())
+                .andExpect(status().isOk()) //200 기대
                 .andExpect(view().name("order_list"))
                 .andExpect(model().attributeExists("receivedOrder"))
                 .andExpect(model().attributeExists("shippingOrdersByDate"));
-    }
 
-//    @Test
-//    @DisplayName("존재하지 않는 이메일로 주문 조회 시 예외 발생 테스트")
-//    void testGetOrderListByInvalidEmail() throws Exception {
-//        // ✅ Mock 객체가 실제 서비스 호출하지 않도록 설정
-//        when(orderService.getGroupedOrdersByEmail(anyString()))
-//                .thenThrow(new IllegalArgumentException("해당 이메일의 주문은 존재하지 않습니다."));
-//
-//        mockMvc.perform(get("/orders/order-list")
-//                        .param("email", "notfound@example.com"))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("error")); // 에러 페이지 뷰가 반환되는지 확인
-//    }
+    }
 }
