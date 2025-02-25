@@ -45,11 +45,13 @@
                     </div>
                     <!-- 기존 주문 상품 출력 끝 -->
 
-                    <div class="text-xl">
+                    <div class="text-lg mt-auto border-t border-t-customBlack p-2">
+                        <span th:text="'배송지'"></span>
+                        <br>
                         <label>
-                            <input type="radio" name="location" value="oldOrderLocation" class="radio radio-lg" />
+                            <input type="radio" name="location" value="oldOrderLocation" class="radio radio-xs bg-white border-white checked:bg-white" />
                         </label>
-                        <span th:text="|${oldOrder.address} ${oldOrder.zipcode}|"></span>
+                        <span th:text="|${oldOrder.address} (${oldOrder.zipcode})|"></span>
                     </div>
 
                 </div>
@@ -80,11 +82,13 @@
                     </div>
                     <!-- 신규 주문 상품 출력 끝 -->
 
-                    <div class="text-xl">
+                    <div class="text-lg mt-auto border-t border-t-customBlack p-2">
+                        <span th:text="'배송지'"></span>
+                        <br>
                         <label>
-                            <input type="radio" name="location" value="newOrderLocation" class="radio radio-lg" checked="checked" />
+                            <input type="radio" name="location" value="newOrderLocation" class="radio radio-xs bg-white border-white checked:bg-white" checked="checked" />
                         </label>
-                        <span th:text="|${newOrder.address} ${newOrder.zipcode}|"></span>
+                        <span th:text="|${newOrder.address} (${newOrder.zipcode})|"></span>
                     </div>
 
                 </div>
