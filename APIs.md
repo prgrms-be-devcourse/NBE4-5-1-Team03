@@ -48,7 +48,7 @@
 ## 6. 주문 결제를 처리하는 엔드포인트
 
 ### POST /orders/processPayment
-- `Model model, @RequestBody @Valid OrderPaymentRequestDto request, RedirectAttributes redirectAttributes`
+- `Model model, @ModelAttribute OrderPaymentRequestDto request, RedirectAttributes redirectAttributes`
 - 고객 이메일, 주소, 우편번호, 주문 상품 목록을 받아 결제 처리
 - 기존 주문이 있는 경우 OrderIntegrationDto인 oldOrder, newOrder Model 추가
   - 같은 주소와 우편 번호인 경우에 해당하는 뷰 반환 result.getViewName() == same_location_order_integration
