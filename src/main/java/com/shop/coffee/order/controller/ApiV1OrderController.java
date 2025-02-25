@@ -88,10 +88,19 @@ public class ApiV1OrderController {
 
     @DeleteMapping("/{orderId}")
     public String deleteOrder(@PathVariable Long orderId, @RequestParam String email, RedirectAttributes redirectAttributes) {
+
         orderService.deleteOrder(orderId);
+
+        //삭제 후 해당 이메일의 주문이 남지 않은 경우
+        List<OrderDto> orders = orderService.getOrdersByEmail(email);
+        if(orders.isEmpty()) {
+            return "redirect:/orders/email-input";
+        }
+
         redirectAttributes.addAttribute("email", email);
 
         return "redirect:/orders";
+
 
     }
 
@@ -128,7 +137,6 @@ public class ApiV1OrderController {
         // 주문이 없는 경우
         List<OrderDto> orders = orderService.getOrdersByEmail(email);
         if(orders.isEmpty()) {
-            //redirectAttributes.addAttribute("message",NO_EMAIL.getMessage()+": " + email);
             return "redirect:/orders/email-input";
         }
 
