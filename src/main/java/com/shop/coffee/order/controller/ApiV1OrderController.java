@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+import static com.shop.coffee.global.exception.ErrorCode.NO_EMAIL;
 import static com.shop.coffee.global.exception.ErrorCode.NO_ORDER_NUMBER;
 
 @Controller
@@ -89,7 +90,9 @@ public class ApiV1OrderController {
     public String deleteOrder(@PathVariable Long orderId, @RequestParam String email, RedirectAttributes redirectAttributes) {
         orderService.deleteOrder(orderId);
         redirectAttributes.addAttribute("email", email);
+
         return "redirect:/orders";
+
     }
 
     @PutMapping("/{orderId}")
@@ -120,9 +123,17 @@ public class ApiV1OrderController {
 
     // 이메일에 해당하는 주문 목록을 조회 - 주문상태 구분하여 뷰 전달
     @GetMapping("/order-list")
-    public String showOrderListGroupByOrderStatus(@RequestParam("email") String email, Model model) {
-        OrderListDto orderListDto = orderService.getGroupedOrdersByEmail(email);
+    public String showOrderListGroupByOrderStatus(@RequestParam("email") String email, RedirectAttributes redirectAttributes, Model model) {
 
+        // 주문이 없는 경우
+        List<OrderDto> orders = orderService.getOrdersByEmail(email);
+        if(orders.isEmpty()) {
+            //redirectAttributes.addAttribute("message",NO_EMAIL.getMessage()+": " + email);
+            return "redirect:/orders/email-input";
+        }
+
+        // 주문 상태에 따른 분류
+        OrderListDto orderListDto = orderService.getGroupedOrdersByEmail(email);
         model.addAttribute("receivedOrder", orderListDto.getMergedReceivedOrder());
         model.addAttribute("shippingOrdersByDate", orderListDto.getShippingOrdersByDate());
 
