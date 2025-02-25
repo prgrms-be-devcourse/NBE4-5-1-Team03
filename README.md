@@ -41,3 +41,8 @@ daisyUI를 사용하기 위해서는 nodejs가 필요합니다. nodejs가 설치
 ```bash
 npm install  
 npm run build:css
+```
+
+<br>
+
+## 📢 발표 자료
