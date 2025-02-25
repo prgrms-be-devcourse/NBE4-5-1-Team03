@@ -55,7 +55,7 @@
             </p>
             <p class="text-lg font-semibold">
                 <span th:text="${receivedOrder.orderItems[0].itemName}"></span>
-                <span th:if="${receivedOrder.orderCount > 1}" th:text="' 외 ' + (${receivedOrder.orderCount - 1}) + ' 건'"></span>
+                <span th:if="${receivedOrder.orderItemsCnt > 1}" th:text="' 외 ' + (${receivedOrder.orderItemsCnt - 1}) + ' 건'"></span>
             </p>
         </div>
 
@@ -126,7 +126,7 @@
                 <!-- 주문 상품 정보 -->
                 <p class="text-lg font-semibold">
                     <span th:text="${entry.value.orderItems[0].itemName}"></span>
-                    <span th:text="' 외 ' + (${entry.value.orderCount - 1}) + ' 건'"></span>
+                    <span th:if="${entry.value.orderItemsCnt > 1}" th:text="' 외 ' + (${entry.value.orderItemsCnt - 1}) + ' 건'"></span>
                 </p>
             </div>
 
