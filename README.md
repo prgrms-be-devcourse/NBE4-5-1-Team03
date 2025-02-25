@@ -29,6 +29,9 @@
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 </div>
 
+<br>
+<br>
+
 ## ⚠️ 주의 사항
 daisyUI를 사용하기 위해서는 nodejs가 필요합니다. nodejs가 설치돼있지 않은 분은 설치해주세요.
 <br>
