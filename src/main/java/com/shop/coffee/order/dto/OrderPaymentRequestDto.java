@@ -21,10 +21,10 @@ public class OrderPaymentRequestDto {
     }
 
 
-    public OrderPaymentRequestDto(    @JsonProperty("email") @NotBlank String email,
-                                      @JsonProperty("address") @NotBlank String address,
-                                      @JsonProperty("zipCode") @NotBlank String zipCode,
-                                      @JsonProperty("items") @NotEmpty List<ItemToOrderItemDto> items) {
+    public OrderPaymentRequestDto(    @NotBlank String email,
+                                      @NotBlank String address,
+                                      @NotBlank String zipCode,
+                                      @NotEmpty List<ItemToOrderItemDto> items) {
         this.email = email;
         this.address = address;
         this.zipCode = zipCode;

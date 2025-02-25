@@ -20,6 +20,7 @@ public class OrderDto {
     private String firstImagePath; // 첫 번째 주문 아이템 이미지
     private int orderCount; // 해당 날짜의 주문 개수
     private List<OrderItemDto> orderItems; // 주문 아이템 리스트
+    private int orderItemsCnt; // 주문 아이템 개수
 
     public OrderDto(Order order) {
         this.id = order.getId();
@@ -34,10 +35,11 @@ public class OrderDto {
         this.orderItems = order.getOrderItems().stream()
                 .map(OrderItemDto::new)
                 .collect(Collectors.toList());
+        this.orderItemsCnt = order.getOrderItems().size();
     }
     // 통합된 주문용 생성자
     public OrderDto(Long id, String email, String address, String zipcode, OrderStatus orderStatus, int totalPrice,
-                    LocalDate orderDate, String firstImagePath, int orderCount, List<OrderItemDto> orderItems) {
+                    LocalDate orderDate, String firstImagePath, int orderCount, List<OrderItemDto> orderItems,int orderItemsCnt) {
         this.id = id;
         this.email = email;
         this.address = address;
@@ -48,6 +50,7 @@ public class OrderDto {
         this.firstImagePath = firstImagePath;
         this.orderCount = orderCount;
         this.orderItems = orderItems;
+        this.orderItemsCnt = orderItemsCnt;
     }
 
 }
