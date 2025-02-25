@@ -46,3 +46,4 @@ npm run build:css
 <br>
 
 ## 📢 발표 자료
+[백엔드 데브코스 3팀 1차 프로젝트.pdf](https://github.com/user-attachments/files/18960132/3.1.pdf)
