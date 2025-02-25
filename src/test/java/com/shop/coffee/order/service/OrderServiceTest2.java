@@ -17,11 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+@ActiveProfiles("local")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest2 {
 

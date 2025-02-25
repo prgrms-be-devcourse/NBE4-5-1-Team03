@@ -14,9 +14,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.mockito.Mockito.*;
 
+@ActiveProfiles("local")
 @ExtendWith(MockitoExtension.class)
 class OrderStatusUpdateSchedulerTest {
 

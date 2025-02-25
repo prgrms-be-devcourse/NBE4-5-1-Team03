@@ -8,11 +8,11 @@ import com.shop.coffee.order.dto.OrderEditDetailDto;
 import com.shop.coffee.order.entity.Order;
 import com.shop.coffee.orderitem.entity.OrderItem;
 import com.shop.coffee.orderitem.repository.OrderItemRepository;
-import com.shop.coffee.orderitem.service.OrderItemService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -21,6 +21,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("local")
 @SpringBootTest(classes = com.shop.coffee.CoffeeApplication.class)
 @Transactional
 public class OrderServiceTest5 {
