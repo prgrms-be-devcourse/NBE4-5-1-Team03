@@ -194,6 +194,7 @@
                             <a th:href="@{'/items/' + ${item.id}}">
                                 <h3 th:text="${item.name}"></h3>
                             </a>
+                            <p th:text="${item.category}"></p>
                         </div>
                         <!-- 가격 (왼쪽 정렬) -->
                         <div class="product-price" th:text="${item.price + '원'}"></div>
