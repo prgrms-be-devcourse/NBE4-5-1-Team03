@@ -231,6 +231,12 @@ public class OrderService {
                 .map(OrderItemDto::new)
                 .collect(Collectors.toList());
 
+        int orderItemsCnt = orders.stream()
+                .flatMap(order -> order.getOrderItems().stream())
+                .mapToInt(OrderItem::getQuantity)  // 각 주문 아이템의 수량을 가져와 합산
+                .sum();
+
+
         return new OrderDto(
                 baseOrder.getId(),
                 baseOrder.getEmail(),
@@ -241,7 +247,8 @@ public class OrderService {
                 baseOrder.getModifiedAt().toLocalDate(), // 주문 날짜 추가 (수정)
                 firstImagePath, // 첫 번째 이미지 경로 추가
                 orderCount, // 주문 개수 추가
-                mergedOrderItems
+                mergedOrderItems, // 병합된 주문 아이템 리스트 추가
+                orderItemsCnt
         );
     }
 
