@@ -40,10 +40,6 @@ out/
 *.mv.db
 *.trace.db
 
-### Setting
-application.yml
-application.properties
-
 # Node.js
 node_modules/
 
