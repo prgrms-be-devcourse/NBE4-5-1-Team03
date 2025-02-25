@@ -17,7 +17,7 @@
   <img src="https://img.shields.io/badge/thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white">
   <br>
   <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
-  <img src="https://img.shields.io/badge/springboot-007396?style=for-the-badge&logo=java&logoColor=white">
+  <img src="https://img.shields.io/badge/springboot-007396?style=for-the-badge&logo=springboot&logoColor=white">
   <img src="https://img.shields.io/badge/spring data JPA-6DB33F?style=for-the-badge&logo=java&logoColor=white">
   <img src="https://img.shields.io/badge/H2 Database-6DB33F?style=for-the-badge&logo=java&logoColor=white">
   <br>
@@ -28,3 +28,13 @@
   <img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white">
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 </div>
+
+## ⚠️ 주의 사항
+daisyUI를 사용하기 위해서는 nodejs가 필요합니다. nodejs가 설치돼있지 않은 분은 설치해주세요.
+<br>
+<br>
+원격 저장소를 받아온 뒤 프로젝트 루트 디렉토리에서 아래 명령어를 실행하세요.
+<br>
+```bash
+npm install  
+npm run build:css
