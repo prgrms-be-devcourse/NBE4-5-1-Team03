@@ -17,9 +17,9 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("local")
 @SpringBootTest(classes = com.shop.coffee.CoffeeApplication.class)
 @Transactional
-@ActiveProfiles("test")  // 테스트 환경에서 실행
 class OrderServiceTest4 {
 
     @Autowired
