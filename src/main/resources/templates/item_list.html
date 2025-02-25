@@ -317,6 +317,12 @@
         const itemsJson = document.getElementById('orderItems').value;
         const items = JSON.parse(itemsJson);
 
+        // 선택한 상품이 없을 때 알림 표시
+        if (items.length === 0 || document.getElementById('totalPrice').textContent === '0') {
+            alert('상품을 하나 이상 선택해주세요.');
+            return;
+        }
+
         // 기존 hidden input 제거
         const oldInput = document.getElementById('orderItems');
         if (oldInput) {
@@ -366,6 +372,17 @@
 
         // 폼 제출
         this.submit();
+    });
+
+    // 페이지 로드 시 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+        // 모든 마이너스 버튼 초기 비활성화
+        document.querySelectorAll('.quantity-controls .minus').forEach(button => {
+            button.disabled = true;
+        });
+
+        // 초기 상태 업데이트 (summary 및 버튼 상태)
+        updateSummary();
     });
 </script>
 </body>
