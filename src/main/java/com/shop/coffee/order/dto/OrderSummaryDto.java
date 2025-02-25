@@ -2,6 +2,7 @@ package com.shop.coffee.order.dto;
 
 import com.shop.coffee.order.OrderStatus;
 import com.shop.coffee.order.entity.Order;
+import com.shop.coffee.orderitem.entity.OrderItem;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -28,10 +29,14 @@ public class OrderSummaryDto {
     }
 
     private String getSummaryItemName(Order order) {
-        if (order.getOrderItems().size() == 1) {
+        int totalItemCount = order.getOrderItems().stream()
+                .mapToInt(OrderItem::getQuantity)
+                .sum();
+
+        if (totalItemCount == 1) {
             return order.getOrderItems().getFirst().getItem().getName();
         } else {
-            return order.getOrderItems().getFirst().getItem().getName() + " 외 " + (order.getOrderItems().size() - 1) + "건";
+            return order.getOrderItems().getFirst().getItem().getName() + " 외 " + (totalItemCount - 1) + "건";
         }
     }
 
