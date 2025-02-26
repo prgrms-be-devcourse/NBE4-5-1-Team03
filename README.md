@@ -1,10 +1,13 @@
 # NBE4-5-1-Team03
 프로그래머스 백엔드 데브코스 4기 5회차 3팀 1차 프로젝트
 
-## 🗂️ APIs
-작성한 API는 아래에서 확인할 수 있습니다.
+<br />
 
-👉🏻 [API 바로보기](/APIs.md)
+## 🧑‍💻 팀원 소개
+|팀장|팀원|팀원|팀원|팀원|
+|:---:|:---:|:---:|:---:|:---:|
+|김지수|민준호|박현모|우동균|정성철|
+|@j1suk1m|@joonhoMin|@Emokido|@thisis-joe|@jsc5023|
 
 <br />
 
@@ -29,21 +32,34 @@
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 </div>
 
-<br>
-<br>
+<br />
 
-## ⚠️ 주의 사항
-daisyUI를 사용하기 위해서는 nodejs가 필요합니다. nodejs가 설치돼있지 않은 분은 설치해주세요.
-<br>
-<br>
-원격 저장소를 받아온 뒤 프로젝트 루트 디렉토리에서 아래 명령어를 실행하세요.
-<br>
+## 🎨 daisyUI 설치 방법
+1. nodejs를 설치합니다.
+2. 원격 저장소의 코드를 받아온 뒤 프로젝트 루트 디렉토리에서 아래 명령어를 실행합니다.
 ```bash
 npm install  
 npm run build:css
 ```
 
-<br>
+<br />
+
+## ✏️ 플로우 차트
+![Image](https://github.com/user-attachments/assets/c0f7056f-2cd5-43c0-bd87-70e0a7936b84)
+
+<br />
+
+## 🏢 ERD
+![Image](https://github.com/user-attachments/assets/41d1fee5-a687-4f29-865d-f85dd2b23f94)
+
+<br />
+
+## 🗂️ APIs
+작성한 API는 아래에서 확인할 수 있습니다.
+
+👉🏻 [API 바로보기](/APIs.md)
+
+<br />
 
 ## 📢 발표 자료
 [백엔드 데브코스 3팀 1차 프로젝트.pdf](https://github.com/user-attachments/files/18960132/3.1.pdf)
