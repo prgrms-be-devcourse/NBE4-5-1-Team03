@@ -1,7 +1,7 @@
 ### 공통 환경 설정
 spring:
   profiles:
-    active: local
+    active: prod
   h2:
     console:
       enabled: true
