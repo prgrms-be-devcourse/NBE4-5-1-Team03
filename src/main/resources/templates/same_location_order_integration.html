@@ -45,8 +45,10 @@
                     </div>
                     <!-- 기존 주문 상품 출력 끝 -->
 
-                    <div class="text-xl">
-                        <span th:text="|${oldOrder.address} ${oldOrder.zipcode}|"></span>
+                    <div class="text-lg mt-auto border-t border-t-customBlack p-2">
+                        <span th:text="'배송지'"></span>
+                        <br>
+                        <span th:text="|${newOrder.address} (${newOrder.zipcode})|"></span>
                     </div>
 
                 </div>
@@ -77,8 +79,10 @@
                     </div>
                     <!-- 신규 주문 상품 출력 끝 -->
 
-                    <div class="text-xl">
-                        <span th:text="|${newOrder.address} ${newOrder.zipcode}|"></span>
+                    <div class="text-lg mt-auto border-t border-t-customBlack p-2">
+                        <span th:text="'배송지'"></span>
+                        <br>
+                        <span th:text="|${newOrder.address} (${newOrder.zipcode})|"></span>
                     </div>
 
                 </div>
