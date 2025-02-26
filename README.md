@@ -7,7 +7,7 @@
 |팀장|팀원|팀원|팀원|팀원|
 |:---:|:---:|:---:|:---:|:---:|
 |김지수|민준호|박현모|우동균|정성철|
-|@j1suk1m|@joonhoMin|@Emokido|@thisis-joe|@jsc5023|
+|[@j1suk1m](https://github.com/j1suk1m)|[@joonhoMin](https://github.com/joonhoMin)|[@Emokido](https://github.com/Emokido)|[@thisis-joe](https://github.com/thisis-joe)|[@jsc5023](https://github.com/jsc5023)|
 
 <br />
 
