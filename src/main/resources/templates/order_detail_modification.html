@@ -19,13 +19,13 @@
         }
     </style>
 </head>
-<body>
+<body class="h-screen bg-white">
 <div class="container mx-auto px-4 py-4">
     <div class="flex items-center mb-4">
         <!-- 뒤로가기 버튼 -->
         <button th:data-id="${orderEditDetail.getId()}"
                 onclick="handleBackNavigation(this.getAttribute('data-id'))"
-                class="w-12 h-12 flex items-center justify-center"
+                class="w-12 h-12 flex items-center justify-center text-customBlack"
                 id="backButton">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M5 12L12 19M5 12L12 5" />
@@ -33,7 +33,7 @@
         </button>
 
         <!-- 제목 -->
-        <h1 class="text-2xl font-bold flex-1 text-center pr-8">Grids & Circle</h1>
+        <h1 class="text-2xl font-bold flex-1 text-center pr-8 text-customBlack">Grids & Circle</h1>
     </div>
 
     <div class="card bg-base-100 border border-black shadow-lg max-w-4xl mx-auto">
